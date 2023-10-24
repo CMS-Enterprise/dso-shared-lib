@@ -1,0 +1,3 @@
+def scan () {
+    echo"scanning"
+}
