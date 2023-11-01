@@ -1,3 +1,3 @@
-def build() {
-    echo "kaniko build"
+def upload() {
+    echo "kaniko upload"
 }

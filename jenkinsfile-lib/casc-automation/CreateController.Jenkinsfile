@@ -21,15 +21,15 @@ pipeline{
             steps{
                 conatiner ("base-agent"){
                     script{
-                        git.clone("dso-contrl-casc")
-                        git.clone("dso-cjoc-casc")
+                        git.clone("https://github.com/CMS-Enterprise/dso-contrl-casc.git", "main")
+                        git.clone("https://github.com/CMS-Enterprise/dso-cjoc-casc.git", "main")
                         cloudbees.determineController()
                         cloudbees.createNewController()
                         cloudbees.validateControllerCasc()
-                        git.push("dso-contrl-casc")
+                        git.push("dso-contrl-casc", "main", "creating new controller")
                         cloudbees.appendControllerToCjoc()
                         cloudbees.validateCjocCasc()
-                        git.push("dso-cjoc-casc")
+                        git.push("dso-cjoc-casc", "main", "creating new controller on cjoc")
                         cloudbees.cjocConfigMapUpdate()
                         cloudbees.reloadCjoc()
                     }
