@@ -44,4 +44,4 @@ spec:
       - /busybox/cat
     tty: true
   imagePullSecrets:
-  - name: artif-token-sde
+  - name: jfrog-secret
