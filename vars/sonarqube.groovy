@@ -58,7 +58,7 @@ def digestParameters(Map properties=[:]) {
 def scan(Map properties=[:]) {
   def sonarqubeParams = digestParameters(properties)
   logger.debug("SonarQube Scan Triggered")
-  withCredentials([string(credentialsId: "${env.sonarQubeCredentialId}", variable: 'TOKEN')]) {
+  withCredentials([string(credentialsId: "sonarqube-sa", variable: 'TOKEN')]) {
                 sh "sonar-scanner -Dsonar.login=${TOKEN} \
     -Dsonar.projectName=${properties.sonarqube.projectKey} \
     -Dsonar.projectKey=${properties.sonarqube.projectKey} \

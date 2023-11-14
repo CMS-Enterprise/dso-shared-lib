@@ -12,16 +12,17 @@ def push(Map properties=[:]) {
     logger.info("Ignored Paths: ${ignorePathArg}")
     logger.debug("executeKaniko params: ${properties}")
     logger.info("Docker User Args: ${properties.build.dockerargs}")
-    if (properties.build.dockerPath) {
-        env.DOCKERPATH = "${properties.build.dockerPath}/"
-    } else {
-        env.DOCKERPATH = ""
-    }
-    def tagList = "${env.nexusUrl}/${properties.build.repo.toLowerCase()}/${env.DOCKERPATH}${properties.appName.toLowerCase()}:${env.GIT_COMMIT}"
+    // if (properties.build.dockerPath) {
+    //     env.DOCKERPATH = "${properties.build.dockerPath}/"
+    // } else {
+    //     env.DOCKERPATH = ""
+    // }
+    // def tagList = "${env.nexusUrl}/${properties.build.repo.toLowerCase()}/${env.DOCKERPATH}${properties.appName.toLowerCase()}:${env.GIT_COMMIT}"
+    def tagList = "artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${env.GIT_COMMIT}"
     if (properties.build.imageTag) {
         tags = properties.build.imageTag.replaceAll(\\s+, "").split(',')
         for (tag in tags) {
-            tagList = "${tagList}" + " -d ${env.nexusUrl}/${properties.build.repo.toLowerCase()}/${env.DOCKERPATH}${properties.appName.toLowerCase()}:${tag}"
+            tagList = "${tagList}" + " -d artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${tag}"
         }
         logger.info("Building with Tag from Properties File")
     }
