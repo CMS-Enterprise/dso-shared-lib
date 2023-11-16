@@ -41,7 +41,7 @@ spec:
     workingDir: "/home/jenkins/agent"
     imagePullPolicy: Always
     command:
-      - /busybox/cat
+    - /busybox/cat
     tty: true
   imagePullSecrets:
   - name: jfrog-secret
