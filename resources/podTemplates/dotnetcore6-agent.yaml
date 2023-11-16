@@ -37,7 +37,7 @@ spec:
         readOnly: false
       workingDir: "/home/jenkins/agent"
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug
+      image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command:
