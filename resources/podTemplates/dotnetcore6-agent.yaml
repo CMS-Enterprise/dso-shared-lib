@@ -3,45 +3,45 @@ metadata:
   name: dotnetcore6-build
 spec:
   containers:
-  - name: dotnetcore6
-    image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0
-    imagePullPolicy: Always
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: "/home/jenkins/agent"
-      name: "workspace-volume"
-      readOnly: false
-    workingDir: "/home/jenkins/agent"
-  # - name: base-agent
-  #   image: us-artifactory.customer.com/devops-docker-local/base-agent:latest
-  #   imagePullPolicy: Always
-  #   command:
-  #   - cat
-  #   tty: true
-  #   volumeMounts:
-  #   - mountPath: "/home/jenkins/agent"
-  #     name: "workspace-volume"
-  #     readOnly: false
-  #   workingDir: "/home/jenkins/agent"
-  - name: sonarqube
-    image: artifactory.cloud.cms.gov/docker/sonarsource/sonar-scanner-cli:5.0
-    imagePullPolicy: Always
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: "/home/jenkins/agent"
-      name: "workspace-volume"
-      readOnly: false
-    workingDir: "/home/jenkins/agent"
-  - name: kaniko
-    image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
-    workingDir: "/home/jenkins/agent"
-    imagePullPolicy: Always
-    command:
-    - /busybox/cat
-    tty: true
+    - name: dotnetcore6
+      image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    # - name: base-agent
+    #   image: us-artifactory.customer.com/devops-docker-local/base-agent:latest
+    #   imagePullPolicy: Always
+    #   command:
+    #   - cat
+    #   tty: true
+    #   volumeMounts:
+    #   - mountPath: "/home/jenkins/agent"
+    #     name: "workspace-volume"
+    #     readOnly: false
+    #   workingDir: "/home/jenkins/agent"
+    - name: sonarqube
+      image: artifactory.cloud.cms.gov/docker/sonarsource/sonar-scanner-cli:5.0
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: kaniko
+      image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
+      workingDir: "/home/jenkins/agent"
+      imagePullPolicy: Always
+      command:
+      - /busybox/cat
+      tty: true
   imagePullSecrets:
   - name: jfrog-secret
