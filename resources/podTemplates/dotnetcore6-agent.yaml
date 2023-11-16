@@ -4,7 +4,7 @@ metadata:
 spec:
   containers:
     - name: dotnetcore6
-      image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0
+      image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0-alpine
       imagePullPolicy: Always
       # command:
       # - cat
