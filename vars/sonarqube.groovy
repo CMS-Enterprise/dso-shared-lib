@@ -1,3 +1,4 @@
+import groovy.yaml.YamlSlurper 
 // def scan () {
 //     echo"scanning"
 // }
