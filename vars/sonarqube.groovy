@@ -24,22 +24,22 @@ def digestParameters(Map properties=[:]) {
       logger.info("no technologyFound")
     }
     // Does this work?? filepath?
-    def projectMap = libraryResource "sonarqube/${properties.ghOrg}.yaml"
-    if(fileExists(projectMap)) {
-      logger.debug("Project file: ${properties.ghOrg} exists proceeding to read file.")
-      // def projectMap = readYaml file: "../cloudbees-sonarqube-settings/${properties.ghOrg}.yaml"
-      if(projectMap.sonarqube){
-        logger.debug("Project level overrides exists, overwritting... ")
-        projectMap.sonarqube.each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
-      }
-      if(projectMap."${properties.appName}"){
-        logger.debug("Repo level overrides exists, overwritting... ")
-        projectMap."${properties.appName}".each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
-      }
-    }
-    else {
-      logger.debug("No Project File: So skipping the procject level override")
-    }
+    // def projectMap = libraryResource "sonarqube/${properties.ghOrg}.yaml"
+    // if(fileExists(projectMap)) {
+    //   logger.debug("Project file: ${properties.ghOrg} exists proceeding to read file.")
+    //   // def projectMap = readYaml file: "../cloudbees-sonarqube-settings/${properties.ghOrg}.yaml"
+    //   if(projectMap.sonarqube){
+    //     logger.debug("Project level overrides exists, overwritting... ")
+    //     projectMap.sonarqube.each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
+    //   }
+    //   if(projectMap."${properties.appName}"){
+    //     logger.debug("Repo level overrides exists, overwritting... ")
+    //     projectMap."${properties.appName}".each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
+    //   }
+    // }
+    // else {
+    //   logger.debug("No Project File: So skipping the procject level override")
+    // }
     //Convert Yaml Maps to map of params that can be passed to CLI
     def paramBuilder = " -Dsonar.host.url=${env.sonarQubeUrl}"
     paramBuilder += defaultMap.sonarqube?.reportPath          ? " ${defaultMap.sonarqube.reportPath}"                                        : ""
