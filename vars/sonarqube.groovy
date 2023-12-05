@@ -13,6 +13,7 @@ def digestParameters(Map properties=[:]) {
     // }
     logger.info("Running digestParameters")
     def defaultMap = libraryResource "sonarqube/defaults.yaml"
+    println "${defaultMap}"
     if(defaultMap.sonarqube."${properties.tech}"){
       logger.debug("Technology specific defaults exist. Adding to default Map")
       logger.debug("Technology: defaultMap.${properties.tech}")
