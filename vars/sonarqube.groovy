@@ -15,8 +15,9 @@ def digestParameters(Map properties=[:]) {
     def defaultMap = libraryResource "sonarqube/defaults.yaml"
     // Yaml yaml = new Yaml()
     // yaml.load(defaultMap)
-    defaultMap =  evaluate(defaultMap)
-    println "${defaultMap}"
+    // defaultMap =  evaluate(defaultMap)
+    Map defaultMapYaml = new YamlSlurper().parseText(defaultMap)
+    println "${defaultMapYaml}"
     if(defaultMap.sonarqube."${properties.tech}"){
       logger.debug("Technology specific defaults exist. Adding to default Map")
       logger.debug("Technology: defaultMap.${properties.tech}")
