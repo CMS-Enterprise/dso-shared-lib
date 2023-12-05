@@ -12,10 +12,10 @@ def digestParameters(Map properties=[:]) {
     //         url: "${env.bitbucketUrl}/scm/ce/cloudbees-module-settings.git"
     // }
     logger.info("Running digestParameters")
-    def defaultMap = libraryResource "sonarqube/defaults.yaml"
+    def defaultMapYaml = libraryResource "sonarqube/defaults.yaml"
     // writeFile(file: “defaults.yaml”, text: defaultMap)
-    defaultMapYaml = readYaml text: defaultMap
-    println "${defaultMapYaml}"
+    defaultMap = readYaml text: defaultMapYaml
+    println "${defaultMap}"
     if(defaultMap.sonarqube."${properties.tech}"){
       logger.debug("Technology specific defaults exist. Adding to default Map")
       logger.debug("Technology: defaultMap.${properties.tech}")
