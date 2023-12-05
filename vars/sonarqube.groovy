@@ -11,11 +11,14 @@ def digestParameters(Map properties=[:]) {
     //         credentialsId: "${env.bitbucketCredentialId}",
     //         url: "${env.bitbucketUrl}/scm/ce/cloudbees-module-settings.git"
     // }
+    logger.info("Running digestParameters")
     def defaultMap = libraryResource "sonarqube/defaults.yaml"
     if(defaultMap.sonarqube."${properties.tech}"){
       logger.debug("Technology specific defaults exist. Adding to default Map")
       logger.debug("Technology: defaultMap.${properties.tech}")
       defaultMap.sonarqube."${properties.tech}".each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
+    } else {
+      logger.info("no technologyFound")
     }
     // Does this work?? filepath?
     def projectMap = libraryResource "sonarqube/${properties.ghOrg}.yaml"
