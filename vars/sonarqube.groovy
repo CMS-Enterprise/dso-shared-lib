@@ -1,6 +1,6 @@
-def scan () {
-    echo"scanning"
-}
+// def scan () {
+//     echo"scanning"
+// }
 
 def digestParameters(Map properties=[:]) {
     // def moduleSettingsBranch
