@@ -10,7 +10,7 @@ def push(Map properties=[:]) {
         ignorePathArg = ignorePathArg + "--ignore-path ${path} "
     }
     logger.info("Ignored Paths: ${ignorePathArg}")
-    logger.debug("executeKaniko params: ${properties}")
+    // logger.debug("executeKaniko params: ${properties}")
     logger.info("Docker User Args: ${properties.build.dockerargs}")
     // if (properties.build.dockerPath) {
     //     env.DOCKERPATH = "${properties.build.dockerPath}/"
