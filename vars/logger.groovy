@@ -25,7 +25,7 @@ def debug(String msg) {
         Input:
             msg: Some type of process indicator
     */
-    if (env.DEBUG.toUpperCase() == 'TRUE') {
+    if (env.DEBUG && env.DEBUG.toUpperCase() == 'TRUE') {
         echo "[DEBUG] - ${msg}"
     }
 }

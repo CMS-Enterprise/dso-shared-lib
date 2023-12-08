@@ -1,7 +1,3 @@
-// def scan () {
-//     echo"scanning"
-// }
-
 def digestParameters(Map properties=[:]) {
     // def moduleSettingsBranch
     // if (env.devopsDebugOverridesModuleSettingsBranch){ moduleSettingsBranch = devopsDebugOverridesModuleSettingsBranch }
@@ -13,7 +9,6 @@ def digestParameters(Map properties=[:]) {
     // }
     logger.info("Running digestParameters")
     def defaultMapYaml = libraryResource "sonarqube/defaults.yaml"
-    // writeFile(file: “defaults.yaml”, text: defaultMap)
     defaultMap = readYaml text: defaultMapYaml
     println "${defaultMap}"
     if(defaultMap.sonarqube."${properties.tech}"){
