@@ -2,7 +2,7 @@ def failure() {
   /*
         Function to validate if email and MS Teams webhook are provided, and frame Email subject and body
   */
-    if(!(env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
         def subject = "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' encountered a problem"
         // def template = '''${SCRIPT, template="failure.template"}'''
         def template = "Your Job Failed"
@@ -18,7 +18,7 @@ def success() {
   /*
         Function to validate if email and MS Teams webhook are provided, and frame Email subject and body
   */
-    if(!(env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
         def subject = "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' "
         // def template = '''${SCRIPT, template="success.template"}'''
         def template = "Your Job was Successful"
