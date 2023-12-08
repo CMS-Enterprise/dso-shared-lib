@@ -1,12 +1,13 @@
-def failure() {
+def failure(Map properties) {
   /*
         Function to validate if email and MS Teams webhook are provided, and frame Email subject and body
   */
-    if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    // if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    if (properties.email) {
         def subject = "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' encountered a problem"
         // def template = '''${SCRIPT, template="failure.template"}'''
         def template = "Your Job Failed"
-        sendEmail(subject,template)
+        sendEmail(properties.email,subject,template)
     }
     if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)){
         def colorCode = '#FF0000'
@@ -14,11 +15,12 @@ def failure() {
         sendMSTeams(subject, "FAILURE", colorCode)
     }
 }
-def success() {
+def success(Map properties) {
   /*
         Function to validate if email and MS Teams webhook are provided, and frame Email subject and body
   */
-    if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    // if(!(env.EMAIL_NOTIFICATION || env.EMAIL_NOTIFICATION ==~ /(?i)(false)/)) {
+    if (properties.email) {
         def subject = "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' "
         // def template = '''${SCRIPT, template="success.template"}'''
         def template = "Your Job was Successful"
@@ -49,7 +51,7 @@ def jiraFailure() {
         sendMSTeams(subject, "ACTION REQUIRED", colorCode)
     }
 }
-def sendEmail(def subject, def details) {
+def sendEmail(def email, def subject, def details) {
   /*
         Function to send email
         Input:
@@ -58,7 +60,7 @@ def sendEmail(def subject, def details) {
             email: Recipient
   */
     emailext (
-        to: "${EMAIL_NOTIFICATION}",
+        to: "${email}",
         mimeType: 'text/html',
         subject: subject,
         body: details
