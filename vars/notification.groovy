@@ -9,7 +9,8 @@ def failure(Map properties) {
         def template = "Your Job Failed"
         sendEmail(properties.email,subject,template)
     }
-    if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)){
+    // if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)){
+    if (properties.MSTEAMS_WEBHOOK) {
         def colorCode = '#FF0000'
         def subject = "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
         sendMSTeams(subject, "FAILURE", colorCode)
@@ -26,7 +27,8 @@ def success(Map properties) {
         def template = "Your Job was Successful"
         sendEmail(subject,template)
     }
-    if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)){
+    // if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)){
+    if (properties.MSTEAMS_WEBHOOK) {
         def colorCode = '#FF0000'
         def subject = "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
         sendMSTeams(subject, "SUCCESS", colorCode)
@@ -45,7 +47,8 @@ def jiraFailure() {
         def template = '''${SCRIPT, template="jiraFailure.template"}'''
         sendEmail(subject,template)
     }
-    if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)) {
+    // if(!(env.MSTEAMS_WEBHOOK ==~ /(?i)(false)/)) {
+    if (properties.MSTEAMS_WEBHOOK) {
         def colorCode = '#000000'
         def subject = "ACTION: Update ${env.JIRA_STORIES} workflow for ${env.JOB_NAME}"
         sendMSTeams(subject, "ACTION REQUIRED", colorCode)
@@ -75,10 +78,11 @@ def sendMSTeams(def msTeamsMsg, def bStatus, def colorCode) {
             bStatus: Build Status
             teamsWebHook: Webhook url to send the notification
   */
-  office365ConnectorSend (
-    color: colorCode,
-                                message: msTeamsMsg,
-                                status: bStatus,
-                                webhookUrl: "${env.MSTEAMS_WEBHOOK}"
-                )
+  logger.info("sending MSTeam notification")
+//   office365ConnectorSend (
+//     color: colorCode,
+//                                 message: msTeamsMsg,
+//                                 status: bStatus,
+//                                 webhookUrl: "${env.MSTEAMS_WEBHOOK}"
+//                 )
 }
