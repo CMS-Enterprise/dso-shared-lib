@@ -13,15 +13,14 @@ def push(Map properties=[:]) {
     // } else {
     //     env.DOCKERPATH = ""
     // }
-    // def tagList = "${env.nexusUrl}/${properties.build.repo.toLowerCase()}/${env.DOCKERPATH}${properties.appName.toLowerCase()}:${env.GIT_COMMIT}"
     def tagList = "artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${env.GIT_COMMIT}"
-    // if (properties.build.imageTag) {
-    //     tags = properties.build.imageTag.replaceAll(\\s+, "").split(',')
-    //     for (tag in tags) {
-    //         tagList = "${tagList}" + " -d artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${tag}"
-    //     }
-    //     logger.info("Building with Tag from Properties File")
-    // }
+    if (properties.build.imageTag) {
+        tags = properties.build.imageTag.replaceAll("\\s+", "").split(',')
+        for (tag in tags) {
+            tagList = "${tagList}" + " -d artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${tag}"
+        }
+        logger.info("Building with Tag from Properties File")
+    }
     def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${properties.appName}-file-details --digest-file=${properties.appName}-image-properties --verbosity=info"
     withCredentials([
         file(credentialsId: "JfrogArt-SA-rw-kaniko",variable: 'BUILD_TOKEN'),
