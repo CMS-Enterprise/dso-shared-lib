@@ -4,7 +4,7 @@ metadata:
 spec:
   containers:
     - name: maven
-      image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0-alpine
+      image: artifactory.cloud.cms.gov/docker/maven/maven:3.9-amazoncorretto-11
       imagePullPolicy: Always
       command:
       - cat
