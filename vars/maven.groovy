@@ -1,7 +1,7 @@
 def compile(String buildArgs="") {
-    withCredentials([file(credentialsId: "", variable: "FILE")]) {
-        sh "cp \$FILE /usr/share/maven/conf/settings.xml"
-    }
+    // withCredentials([file(credentialsId: "", variable: "FILE")]) {
+    //     sh "cp \$FILE /usr/share/maven/conf/settings.xml"
+    // }
     logger.info("Maven compiling")
     logger.debug("buildArgs: ${buildArgs}")
     buildParam = buildArgs?.buildParam ?: "clean compile"
