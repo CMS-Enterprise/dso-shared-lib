@@ -4,20 +4,20 @@ def compile(String buildArgs="") {
     // }
     logger.info("Maven compiling")
     logger.debug("buildArgs: ${buildArgs}")
-    buildParam = buildArgs?.buildParam ?: "clean compile"
+    buildParam = buildArgs?: "clean compile"
     sh "mvn ${buildParam}"
 }
 
 def test(String testArgs="") {
     logger.info("Maven testing")
     logger.debug("testArgs: ${testArgs}")
-    testParam = testArgs?.testParam ?: "clean test"
+    testParam = testArgs?: "clean test"
     sh "mvn ${testParam}"
 }
 
 def mvnPackage(String packageArgs="") {
     logger.info("Maven packaging")
     logger.debug("packageArgs: ${packageArgs}")
-    packageParam = packageArgs?.packageParam ?: "clean package"
+    packageParam = packageArgs?: "clean package"
     sh "mvn ${packageParam}"
 }
