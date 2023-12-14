@@ -1,4 +1,4 @@
-def compile(Map buildArgs=[:]) {
+def compile(String buildArgs="") {
     withCredentials([file(credentialsId: "", variable: "FILE")]) {
         sh "cp \$FILE /usr/share/maven/conf/settings.xml"
     }
@@ -8,14 +8,14 @@ def compile(Map buildArgs=[:]) {
     sh "mvn ${buildParam}"
 }
 
-def test(Map testArgs=[:]) {
+def test(String testArgs="") {
     logger.info("Maven testing")
     logger.debug("testArgs: ${testArgs}")
     testParam = testArgs?.testParam ?: "clean test"
     sh "mvn ${testParam}"
 }
 
-def mvnPackage(Map packageArgs=[:]) {
+def mvnPackage(String packageArgs="") {
     logger.info("Maven packaging")
     logger.debug("packageArgs: ${packageArgs}")
     packageParam = packageArgs?.packageParam ?: "clean package"
