@@ -1,0 +1,51 @@
+kind: Pod
+metadata:
+  name: maven-build
+spec:
+  containers:
+    - name: maven
+      image: artifactory.cloud.cms.gov/docker/maven:3.9-amazoncorretto-17
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    # - name: base-agent
+    #   image: us-artifactory.customer.com/devops-docker-local/base-agent:latest
+    #   imagePullPolicy: Always
+    #   command:
+    #   - cat
+    #   tty: true
+    #   volumeMounts:
+    #   - mountPath: "/home/jenkins/agent"
+    #     name: "workspace-volume"
+    #     readOnly: false
+    #   workingDir: "/home/jenkins/agent"
+    - name: sonarqube
+      image: artifactory.cloud.cms.gov/docker/sonarsource/sonar-scanner-cli:5.0
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
+      workingDir: "/home/jenkins/agent"
+      imagePullPolicy: Always
+      command:
+      - /busybox/cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+  imagePullSecrets:
+  - name: jfrog-secret
