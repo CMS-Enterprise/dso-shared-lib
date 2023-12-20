@@ -1,7 +1,7 @@
 def init(Map deployArgs=[:]) {
     logger.info("terraform init ")
     logger.debug("deployArgs: ${deployArgs}")
-    sh "terraform init -backend-config=${deployArgs.backendConfigFile}"
+    sh "terraform init -backend-config=${deployArgs.backendConfigFile} -chdir=${deployArgs.backendConfigFile}"
 }
 
 def plan(Map deployArgs=[:]) {
