@@ -2,6 +2,8 @@ kind: Pod
 metadata:
   name: tf-build
 spec:
+  serviceAccountName: jenkins-role
+  restartPolicy: Never
   containers:
     # - name: terraform
     #   image: artifactory.cloud.cms.gov/docker/hashicorp/terraform:1.6
