@@ -15,7 +15,7 @@ def plan(Map deployArgs=[:]) {
         export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
         export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
         aws sts get-caller-identity
-        terraform -chdir=${deployArgs.backendConfigFile} plan -var-file=${deployArgs.tfVar} 
+        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} plan -var-file=${WORKSPACE}/${deployArgs.tfVar} 
     """
 }
 
@@ -31,7 +31,7 @@ def apply(Map deployArgs=[:]) {
         export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
         aws sts get-caller-identity
         terraform -chdir=${deployArgs.backendConfigFile} apply -var-file=${deployArgs.tfVar} --auto-approve
-        sleep 300
-        terraform -chdir=${deployArgs.backendConfigFile} destroy -var-file=${deployArgs.tfVar} --auto-approve
+        sleep 30
+        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} destroy -var-file=${WORKSPACE}/${deployArgs.tfVar} --auto-approve
     """
 }
