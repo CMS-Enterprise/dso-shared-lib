@@ -25,6 +25,8 @@ def apply(Map deployArgs=[:]) {
     sh "aws sts get-caller-identity"
     AWSCRED = sh (script: "aws sts assume-role --role-arn ${deployArgs.awsRoleArn} --role-session-name AWSCLI-Session", returnStdout: true)
     AWSCRED = readJSON text: "${AWSCRED}"
+    // Current command also contains "sleep" and "destroy" command for testing purposes
+    // TODO: Remove before release
     sh """
         export AWS_ACCESS_KEY_ID=${AWSCRED.Credentials.AccessKeyId}
         export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
