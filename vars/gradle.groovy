@@ -1,8 +1,6 @@
 def gradleBuild(String buildArgs="") {
     logger.info("Gradle build")
     logger.debug("buildArgs: ${buildArgs}")
-    sh """
-    gradle --version
-    ./gradlew ${buildArgs}
-    """
+    buildParam = buildArgs?: "clean build"
+    sh "./gradlew ${buildArgs}"
 }
