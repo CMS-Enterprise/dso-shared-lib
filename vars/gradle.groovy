@@ -20,7 +20,7 @@ def setGradlePropsFile() {
         writeFile file: "./gradle.properties", text: gradleProps
     }
     //inject auth creds into gradle.properties
-    withCredentials([usernamePassword(credentialsId: "${env.artifactoryUsernamePasswordlId}", usernameVariable: 'artifactoryUser', passwordVariable: 'artifactoryPassword')]) {
+    withCredentials([usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'artifactoryUser', passwordVariable: 'artifactoryPassword')]) {
         sh """
             sed -i 's/\$artifactory_User/'${artifactoryUser}'/g' gradle.properties;
             sed -i 's/\$artifactory_Pwd/'${artifactoryPassword}'/g' gradle.properties;
