@@ -4,8 +4,7 @@ metadata:
 spec:
   containers:
     - name: gradle
-    # TODO: Correct image?? https://hub.docker.com/_/gradle/
-      image: artifactory.cloud.cms.gov/docker/gradle:8.5-jdk11
+      image: artifactory.cloud.cms.gov/docker/amazoncorretto:11
       imagePullPolicy: Always
       command:
       - cat
