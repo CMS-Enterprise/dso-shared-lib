@@ -8,10 +8,10 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
 def snykTest(Map snykTestArgs=[:]) {
     logger.info("Snyk Test")
     logger.debug("snykTestArgs: ${snykTestArgs}")
-    withCredentials([text(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
+    withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
-            snyk test --org=${snykTestArgs.orgId} --json
+            snyk test --org=${snykTestArgs.snyk.orgId} --json
         """
     }
 }
