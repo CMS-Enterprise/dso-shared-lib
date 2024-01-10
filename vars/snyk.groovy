@@ -11,7 +11,7 @@ def snykTest(Map snykTestArgs=[:]) {
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
-            snyk test --org=${snykTestArgs.snyk.orgId} --json
+            snyk test --org=${snykTestArgs.snyk.orgId} --file=${WORKSPACE}/${snykTestArgs.snyk.gradleBuildPath} --json
         """
     }
 }
