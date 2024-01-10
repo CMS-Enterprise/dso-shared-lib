@@ -8,7 +8,7 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
 def snykTest(Map snykTestArgs=[:]) {
     logger.info("Snyk Test")
     logger.debug("snykTestArgs: ${snykTestArgs}")
-    gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: ""
+    gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: "build.gradle"
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
