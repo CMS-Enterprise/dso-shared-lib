@@ -3,7 +3,7 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
-            snyk code test --org=${snykTestArgs.snyk.orgId} --json
+            snyk code test --org=${snykCodeTestArgs.snyk.orgId} --json
         """
     }
 }
