@@ -5,8 +5,8 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
     sh "snyk code test ${snykCodeTestParam}"
 }
 
-def snykTest(Map snykTestArgs=[:]) {
-    logger.info("Snyk Test")
+def snykTest1(Map snykTestArgs=[:]) {
+    logger.info("Snyk Test1")
     logger.debug("snykTestArgs: ${snykTestArgs}")
     logger.info("Technology: ${snykTestArgs.tech}")
     def projectTech = "${snykTestArgs.tech}"
@@ -31,8 +31,8 @@ def snykTest(Map snykTestArgs=[:]) {
     }
 }
 
-def snykTest2(Map snykTestArgs=[:]) {
-    logger.info("Snyk Test")
+def snykTest(Map snykTestArgs=[:]) {
+    logger.info("Snyk Test2")
     logger.debug("snykTestArgs: ${snykTestArgs}")
     logger.info("Technology: ${snykTestArgs.tech}")
     def xrayCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
