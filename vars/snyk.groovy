@@ -38,7 +38,7 @@ def snykTest(Map snykTestArgs=[:]) {
     def xrayCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
     def projectTech = "${snykTestArgs.tech}"
     switch(snykTestArgs.tech) {
-        case projectTech.equalsIgnoreCase("gradle"):
+        case "gradle":
             gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: "build.gradle"
             xrayCommand += " --file=${WORKSPACE}/${gradleBuildPathParam}"
             break;
