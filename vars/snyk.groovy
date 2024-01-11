@@ -54,8 +54,6 @@ def snykTest(Map snykTestArgs=[:]) {
         ${xrayCommand}
     """
     }
-
-
 }
 
 def snykMonitor(Map snykMonitorArgs=[:]) {
