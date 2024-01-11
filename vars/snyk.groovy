@@ -10,7 +10,7 @@ def snykTest(Map snykTestArgs=[:]) {
     logger.debug("snykTestArgs: ${snykTestArgs}")
     logger.info("Technology: ${snykTestArgs.tech}")
     switch(snykTestArgs.tech) {
-        case snykTestArgs.tech==="gradle":
+        case snykTestArgs.tech=="gradle":
             gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: "build.gradle"
             withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
                 sh """
