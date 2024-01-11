@@ -1,4 +1,4 @@
-def snykCodeTest() {
+def snykCodeTest(Map snykCodeTestArgs=[:]) {
     logger.info("Snyk Code Test")
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
