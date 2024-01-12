@@ -58,5 +58,15 @@ spec:
       - mountPath: "/home/jenkins/agent"
         name: "workspace-volume"
         readOnly: false
+    - name: jfrog
+      image: artifactory.cloud.cms.gov/docker/jfrog/jfrog-cli-v2-jf
+      workingDir: "/home/jenkins/agent"
+      imagePullPolicy: Always
+      command: ['cat']
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
   imagePullSecrets:
   - name: jfrog-secret

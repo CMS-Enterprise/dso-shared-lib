@@ -8,32 +8,6 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
     }
 }
 
-def snykTest1(Map snykTestArgs=[:]) {
-    logger.info("Snyk Test1")
-    logger.debug("snykTestArgs: ${snykTestArgs}")
-    logger.info("Technology: ${snykTestArgs.tech}")
-    def projectTech = "${snykTestArgs.tech}"
-    switch(snykTestArgs.tech) {
-        case "gradle":
-            gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: "build.gradle"
-            withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
-                sh """
-                    snyk auth ${TOKEN}
-                    snyk test --org=${snykTestArgs.snyk.orgId} --file=${WORKSPACE}/${gradleBuildPathParam} --json
-                """
-            }
-            break;
-        default:
-            withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
-                sh """
-                    snyk auth ${TOKEN}
-                    snyk test --org=${snykTestArgs.snyk.orgId} --json
-                """
-            }
-            break;
-    }
-}
-
 def snykTest(Map snykTestArgs=[:]) {
     logger.info("Snyk Test2")
     logger.debug("snykTestArgs: ${snykTestArgs}")
