@@ -17,3 +17,15 @@ def jfrogXray(Map properties=[:]) {
         """
     }
 }
+
+jfrogRefreshToken(String refreshedToken) {
+    logger.info("Create new Jfrog Token")
+    def credXml = libraryResource "cloudbees/update-string-cred.xml"
+    writeFile(file: "update-string-cred.xml", text: credXml)
+    withCredentials([usernamePassword(credentialsId: 'jfrog-prod-sa', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+        sh"""
+            ${refreshedToken} = jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000
+            sed -i "" "s/<secret>.*<\/secret>/<secret>${refreshedToken}<\/secret>/g;" update-string-cred.xml
+        """
+    }
+}
