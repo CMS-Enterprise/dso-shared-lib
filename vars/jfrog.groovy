@@ -23,10 +23,10 @@ def jfrogRefreshToken(String refreshedToken) {
     def credXml = libraryResource "cloudbees/update-string-cred.xml"
     writeFile(file: "update-string-cred.xml", text: credXml)
     withCredentials([usernamePassword(credentialsId: 'jfrog-prod-sa', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh"""
+        sh'''
             refreshedToken=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
             testVar="<secret>${refreshedToken}<\\/secret>"
             sed -i "" 's|<secret>.*<\\/secret>|'${testVar}'|g;' update-string-cred.xml
-        """
+        '''
     }
 }
