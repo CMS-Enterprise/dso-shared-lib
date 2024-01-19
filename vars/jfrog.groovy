@@ -25,8 +25,8 @@ jfrogRefreshToken(String refreshedToken) {
     withCredentials([usernamePassword(credentialsId: 'jfrog-prod-sa', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
         sh"""
             refreshedToken = jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000
-            testVar = "<secret>${refreshedToken}<\\\/secret>"
-            sed -i "" 's/<secret>.*<\\\/secret>/'${testVar}'/g;' update-string-cred.xml
+            testVar = "<secret>${refreshedToken}<\/secret>"
+            sed -i "" 's|<secret>.*<\/secret>|'${testVar}'|g;' update-string-cred.xml
         """
     }
 }
