@@ -18,7 +18,7 @@ def jfrogXray(Map properties=[:]) {
     }
 }
 
-jfrogRefreshToken(String refreshedToken) {
+def jfrogRefreshToken(String refreshedToken) {
     logger.info("Create new Jfrog Token")
     def credXml = libraryResource "cloudbees/update-string-cred.xml"
     writeFile(file: "update-string-cred.xml", text: credXml)
