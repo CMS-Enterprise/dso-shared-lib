@@ -19,8 +19,7 @@ def jenkinsUpdateToken(String refreshedToken) {
     sh """
         yum install -y wget
         wget -i https://jenkins-dev-west.cloud.cms.gov/cjoc/jnlpJars/jenkins-cli.jar
-        java -jar jenkins-cli.jar -s https://jenkins-dev-west.cloud.cms.gov/ -http -auth dso-jenkins-dev-a:${TOKEN} 
-            update-credentials-by-xml system::system::jenkins _ JfrogArt-SA-ro-Token < updated_jfrog_token.xml
-        sed -i "s/<secret>.*<\/secret>/<secret'>SECRET<\/secret>/g;" update-string-cred.xml
+        java -jar jenkins-cli.jar -s https://jenkins-dev-west.cloud.cms.gov/ -http -auth dso-jenkins-dev-a:${TOKEN} update-credentials-by-xml system::system::jenkins _ JfrogArt-SA-ro-Token < updated_jfrog_token.xml
+        sed -i "s|<secret>.*<\\/secret>|<secret>SECRET<\\/secret>|g" ./update-string-cred.xml
     """
 }
