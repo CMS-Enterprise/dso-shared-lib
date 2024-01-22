@@ -30,7 +30,7 @@ def jfrogRefreshToken(String refreshedToken) {
             refreshedToken=$(echo ${refreshedTokenResponse} | jq .access_token | sed 's/"//g')
             testVar="<secret>${refreshedToken}<\\/secret>"
             ls -l
-            sed -i "" "s|<secret>.*<\\/secret>|${testVar}|g" ./update-string-cred.xml
+            sed -i "s|<secret>.*<\\/secret>|${testVar}|g" ./update-string-cred.xml
         '''
     }
 }
