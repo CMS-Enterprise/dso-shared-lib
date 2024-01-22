@@ -15,7 +15,7 @@ def reloadCJOC() {
 
 def jenkinsUpdateToken(String refreshedToken) {
     logger.info("Update Access Token Credentials")
-    withCredentials(string[credentialsId: 'jenkins-svc-api-token', variable:'TOKEN'])
+    withCredentials([string(credentialsId: 'jenkins-svc-api-token', variable: 'TOKEN')])
     sh """
         yum install -y wget
         wget -i https://jenkins-dev-west.cloud.cms.gov/cjoc/jnlpJars/jenkins-cli.jar
