@@ -27,7 +27,7 @@ def jfrogRefreshToken(String refreshedToken) {
             apk add --no-cache bash jq
             jq --version
             refreshedTokenResponse=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
-            refreshedToken=$(echo ${refreshedTokenResponse} | jq .access_token)
+            refreshedToken=$(echo ${refreshedTokenResponse} | jq .access_token | tr -d '"' '')
             testVar="<secret>${refreshedToken}<\\/secret>"
             ls
             sed -i "" 's|<secret>.*<\\/secret>|'${testVar}'|g;' update-string-cred.xml
