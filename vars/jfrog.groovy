@@ -24,7 +24,10 @@ def jfrogRefreshToken(String refreshedToken) {
     writeFile(file: "update-string-cred.xml", text: credXml)
     withCredentials([usernamePassword(credentialsId: 'jfrog-prod-sa', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
         sh'''
-            refreshedToken=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
+            yum install jq
+            jq --version
+            refreshedTokenResponse=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
+            refreshedToken=$(jq .access_token ${refreshedTokenResponse})
             testVar="<secret>${refreshedToken}<\\/secret>"
             sed -i "" 's|<secret>.*<\\/secret>|'${testVar}'|g;' update-string-cred.xml
         '''
