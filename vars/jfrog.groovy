@@ -29,6 +29,7 @@ def jfrogRefreshToken(String refreshedToken) {
             refreshedToken=$(echo ${refreshedTokenResponse} | jq .access_token | sed 's/"//g')
             testVar="<secret>${refreshedToken}<\\/secret>"
             sed -i "s|<secret>.*<\\/secret>|${testVar}|g" ./update-string-cred.xml
+            jf rt download --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} tooling-zip-repo/jenkins-jars/jenkins-cli.jar 
         '''
     }
 }
