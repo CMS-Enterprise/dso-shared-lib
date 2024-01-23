@@ -17,7 +17,8 @@ def jenkinsUpdateToken(String refreshedToken) {
     logger.info("Update Access Token Credentials")
     withCredentials([string(credentialsId: 'jenkins-svc-api-token', variable: 'TOKEN')]) {
         sh """
-            java -jar jenkins-cli.jar -s https://jenkins-dev-west.cloud.cms.gov/ -http -auth dso-jenkins-dev-a:${TOKEN} update-credentials-by-xml system::system::jenkins _ JfrogArt-SA-ro-Token < update-string-cred.xml
+            pwd;ls -la
+            java -jar jenkins-jars/jenkins-cli.jar -s https://jenkins-dev-west.cloud.cms.gov/ -http -auth dso-jenkins-dev-a:${TOKEN} update-credentials-by-xml system::system::jenkins _ JfrogArt-SA-ro-Token < update-string-cred.xml
             sed -i "s|<secret>.*<\\/secret>|<secret>SECRET<\\/secret>|g" ./update-string-cred.xml
         """
     }
