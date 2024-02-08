@@ -51,8 +51,6 @@ spec:
       image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
-      command:
-      - /busybox/cat
       tty: true
       volumeMounts:
       - mountPath: "/home/jenkins/agent"
