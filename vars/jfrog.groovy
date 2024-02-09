@@ -13,10 +13,10 @@ def jfrogXray(Map properties=[:]) {
     logger.info("JFrog XRay Scan")
     // jfrogPublishBuild(properties)
     // withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-    withCredentials([usernamePassword(credentialsId: "jfrog-prod-sa", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+    withCredentials([usernamePassword(credentialsId: "sa-dso-jenkins-sandbox", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         // jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
         sh"""
-            jf c add --url=artifactory.cloud.cms.gov --user=${USERNAME} --password=${PASSWORD}
+            jf c add cms-artifactory --url=artifactory.cloud.cms.gov --user=${USERNAME} --password=${PASSWORD}
             jf c show
             jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${properties.build.repoName}'
         """
