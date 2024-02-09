@@ -16,6 +16,7 @@ def jfrogXray(Map properties=[:]) {
         // jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
         sh"""
             jf c add --url=artifactory.cloud.cms.gov --access-token=${TOKEN}
+            jf c show
             jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${properties.artifactoryProjectName}'
         """
     }
