@@ -63,7 +63,7 @@ spec:
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command: 
-        - cat
+      - cat
       tty: true
       volumeMounts:
       - mountPath: "/home/jenkins/agent"
