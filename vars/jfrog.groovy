@@ -22,7 +22,7 @@ def jfrogRefreshToken(String refreshedToken) {
     logger.info("Create new Jfrog Token")
     def credXml = libraryResource "cloudbees/update-string-cred.xml"
     writeFile(file: "update-string-cred.xml", text: credXml)
-    withCredentials([usernamePassword(credentialsId: 'jfrog-prod-sa', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+    withCredentials([usernamePassword(credentialsId: 'dso-jenkins-sandbox', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
         sh'''
             apk add --no-cache bash jq
             refreshedTokenResponse=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
