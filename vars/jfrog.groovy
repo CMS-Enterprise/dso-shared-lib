@@ -8,12 +8,15 @@ def jfrogPublishBuild(Map properties=[:]) {
     }
 }
 
+// TODO: catch block in the XRay scan to where if it returns with "nothing found" then it goes to another function to run "scan" command
 def jfrogXray(Map properties=[:]) {
     logger.info("JFrog XRay Scan")
-    jfrogPublishBuild(properties)
+    // jfrogPublishBuild(properties)
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
+        // jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
         sh"""
-            jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
+            jf c add --url=artifactory.cloud.cms.gov --access-token=${TOKEN}
+            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${properties.artifactoryProjectName}'
         """
     }
 }
