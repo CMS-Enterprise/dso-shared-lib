@@ -21,7 +21,7 @@ def push(Map properties=[:]) {
         }
         logger.info("Building with Tag from Properties File")
     }
-    def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${properties.appName}-file-details --digest-file=${properties.appName}-image-properties --verbosity=info"
+    def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${properties.artifactName}-file-details --digest-file=${properties.artifactName}-image-properties --verbosity=info"
     withCredentials([
         file(credentialsId: "JfrogArt-SA-rw-kaniko",variable: 'BUILD_TOKEN'),
         usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
@@ -32,7 +32,7 @@ def push(Map properties=[:]) {
             mkdir -p /kaniko/.docker
             cp \$BUILD_TOKEN /kaniko/.docker/
             ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg TOKEN=${JfrogArt_TOKEN} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
-            pwd;ls ${properties.appName}-image-properties
+            pwd;ls ${properties.artifactName}-image-properties
         """
     }
 }
