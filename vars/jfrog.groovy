@@ -25,7 +25,7 @@ def jfrogRefreshToken(String refreshedToken) {
     withCredentials([usernamePassword(credentialsId: 'dso-jenkins-sandbox', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
         sh'''
             apk add --no-cache bash jq
-            refreshedTokenResponse=$(jf rt access-token-create --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=Admins --expiry=3456000)
+            refreshedTokenResponse=$(jf rt atc jfrog-sa-ro-token --url=https://artifactory.cloud.cms.gov/artifactory --user=${USER} --password=${PASS} --groups=readers --expiry=3456000)
             refreshedToken=$(echo ${refreshedTokenResponse} | jq .access_token | sed 's/"//g')
             testVar="<secret>${refreshedToken}<\\/secret>"
             sed -i "s|<secret>.*<\\/secret>|${testVar}|g" ./update-string-cred.xml
