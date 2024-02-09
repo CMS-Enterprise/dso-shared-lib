@@ -17,7 +17,7 @@ def jfrogXray(Map properties=[:]) {
         sh"""
             jf c add --url=artifactory.cloud.cms.gov --access-token=${TOKEN}
             jf c show
-            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${properties.artifactoryProjectName}'
+            jf xr curl '/api/v1/artifacts?search=${properties.artifactoryPath}/${env.GIT_COMMIT}/manifest.json&repo=${properties.artifactoryProjectName}'
         """
     }
 }
