@@ -14,12 +14,12 @@ def jfrogXray(Map properties=[:]) {
     // jfrogPublishBuild(properties)
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
         // jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
-        repoName=artifactoryPath.split("/")[0]
+        // def repoName=artifactoryPath.split("/")[0]
         sh"""
-            apk add --no-cache bash jq
             jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             jf c show
             xrayResponse=$(jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}')
+            apk add --no-cache bash jq
             echo ${xrayResponse} | jq
         """
     }
