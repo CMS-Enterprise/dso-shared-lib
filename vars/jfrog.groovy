@@ -21,7 +21,8 @@ def jfrogXray(Map properties=[:]) {
                 jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
             """
             def result = jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
-            if (result.equalsIgnoreCase('null')) { error() }
+            sh "echo ${result}"
+            if (result.equalsIgnoreCase("null")) { error() }
         } catch (err) {
             sh"""
                 echo 'error caught'
