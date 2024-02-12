@@ -27,10 +27,11 @@ def jfrogXray(Map properties=[:]) {
         // echo ${xrayResponse} | jq
 
         // REVERT
+        def repoName = properties.build.artifactoryPath.split("/")[0]
         sh"""
             jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             jf c show
-            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${properties.build.repoName}'
+            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}'
         """
 	
     }
