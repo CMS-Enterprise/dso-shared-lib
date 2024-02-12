@@ -13,27 +13,21 @@ def jfrogXray(Map properties=[:]) {
     logger.info("JFrog XRay Scan")
     // jfrogPublishBuild(properties)
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        // jf build-scan --url=https://artifactory.cloud.cms.gov/xray --access-token=${TOKEN} --project=${properties.artifactoryProjectName} --fail=false ${properties.artifactName} ${env.GIT_COMMIT}
-        // def repoName=properties.build.artifactoryPath.split("/")[0]
-        // sh "echo ${repoName}"
-        // sh '''
-        //     jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
-        //     repoName=$(echo "${properties.build.artifactoryPath}" | cut -d'/' -f1)
-        //     echo ${repoName}
-        //     jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}'
-        //     xrayResponse=$(jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}')
-        // '''
-        // apk add --no-cache bash jq
-        // echo ${xrayResponse} | jq
-
-        // REVERT
         def repoName = properties.build.artifactoryPath.split("/")[0]
-        sh"""
-            apk add --no-cache bash jq
-            jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
-            jf c show
-            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
-        """
+        try {
+            sh"""
+                apk add --no-cache bash jq
+                jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
+                jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
+            """
+            def result = jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
+            if (result.equalsIgnoreCase('null')) { error() }
+        } catch (err) {
+            sh"""
+                echo 'error caught'
+            """
+        }
+        
 	
     }
 }
