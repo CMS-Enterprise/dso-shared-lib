@@ -20,7 +20,7 @@ def jfrogXray(Map properties=[:]) {
             jf c show
             xrayResponse=$(jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}')
             apk add --no-cache bash jq
-            echo ${xrayResponse} | jq
+            echo "${xrayResponse}" | jq
         """
     }
 }
