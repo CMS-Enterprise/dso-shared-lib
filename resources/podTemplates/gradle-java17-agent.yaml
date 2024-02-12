@@ -48,7 +48,7 @@ spec:
         readOnly: false
       workingDir: "/home/jenkins/agent"
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug
+      image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command:
@@ -62,7 +62,8 @@ spec:
       image: artifactory.cloud.cms.gov/docker/jfrog/jfrog-cli-v2-jf
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
-      command: ['cat']
+      command:
+      - cat
       tty: true
       volumeMounts:
       - mountPath: "/home/jenkins/agent"
