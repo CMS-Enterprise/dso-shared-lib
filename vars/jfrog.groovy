@@ -32,8 +32,7 @@ def jfrogXray(Map properties=[:]) {
             apk add --no-cache bash jq
             jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             jf c show
-            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}'
-            echo ${xrayResponse}       
+            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}'     
         """
 	
     }
