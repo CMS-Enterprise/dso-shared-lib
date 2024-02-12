@@ -18,6 +18,7 @@ def jfrogXray(Map properties=[:]) {
         sh "echo ${properties.build}"
         sh "echo ${properties.build.artifactoryPath}"
         def repoName=properties.build.artifactoryPath.split("/")[0]
+        sh "echo ${repoName}"
         sh'''
             jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             jf c show
