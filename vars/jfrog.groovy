@@ -48,7 +48,7 @@ def jfrogRunXray(Map properties=[:], String repoName) {
         while(status.equalsIgnoreCase('SCANNING')) {
             // Waits 30 seconds before trying again, 30 * 1000
             Thread.sleep(30000)
-            status = sh(script: jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ "repo": "${repoName}", "path": "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json"}' | jq -r '.overall.status', returnStdout: true).trim()
+            status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true).trim()
         }
         sh """
             jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'
