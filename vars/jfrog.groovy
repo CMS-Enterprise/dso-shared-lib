@@ -19,6 +19,7 @@ def jfrogXray(Map properties=[:]) {
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
                 jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
             """
+            // TODO: INTENTIONAL ERROR 0 BELOW vvv
             def result = sh(script: "jf xr curl '/api/v1/artifacts?search=0${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
             logger.info("Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 
@@ -26,20 +27,35 @@ def jfrogXray(Map properties=[:]) {
             }
         } catch (err) {
             logger.info("No existing XRay scan found")
-            jfrogRunXray(properties)
+            jfrogRunXray(properties, repoName)
         }
-        
-	
     }
 }
 
-def jfrogRunXray(Map properties=[:]) {
+def jfrogRunXray(Map properties=[:], String repoName) {
     logger.info("Running new XRay Scan")
-    // withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-    //     sh""" 
-    //         jfrog xr s *.zip --repo-path "${repoName}/" --watches=${properties.build.watchList}
-    //     """
-    // }
+    // Need to add project build path and file type to template and properties?? 
+    // Or since we build the application in our pipeline how do we use that? Can we store the output of the build somehow?
+
+    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
+        sh""" 
+            jf c show
+            jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
+            jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ "repo": "${repoName}", "path": "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json"}' | jq '.overall.status'
+        """
+        def status = sh(script: jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ "repo": "${repoName}", "path": "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json"}' | jq -r '.overall.status', returnStdout: true).trim()
+        logger.info("Status: ${status}")
+        while(status.equalsIgnoreCase('SCANNING')) {
+            // Waits 30 seconds before trying again, 30 * 1000
+            Thread.sleep(30000)
+            status = sh(script: jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ "repo": "${repoName}", "path": "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json"}' | jq -r '.overall.status', returnStdout: true).trim()
+        }
+        sh """
+            jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'
+        """
+
+        // While : ; do thing_one; thing_two; sleep 5; done
+    }
 
 }
 
