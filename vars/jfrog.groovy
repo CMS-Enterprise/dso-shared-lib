@@ -8,7 +8,6 @@ def jfrogPublishBuild(Map properties=[:]) {
     }
 }
 
-// TODO: catch block in the XRay scan to where if it returns with "nothing found" then it goes to another function to run "scan" command
 def jfrogXray(Map properties=[:]) {
     logger.info("JFrog XRay Scan")
     // jfrogPublishBuild(properties)
@@ -21,16 +20,27 @@ def jfrogXray(Map properties=[:]) {
                 jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
             """
             def result = jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
-            sh "echo ${result}"
-            if (result.equalsIgnoreCase("null")) { error() }
+            logger.info("Result: ${result}")
+            if (result.equalsIgnoreCase("null")) { 
+                error()
+            }
         } catch (err) {
-            sh"""
-                echo 'error caught'
-            """
+            logger.info("No existing XRay scan found")
+            jfrogRunXray(properties)
         }
         
 	
     }
+}
+
+def jfrogRunXray(Map properties=[:]) {
+    logger.info("Running new XRay Scan")
+    // withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
+    //     sh""" 
+    //         jfrog xr s *.zip --repo-path "${repoName}/" --watches=${properties.build.watchList}
+    //     """
+    // }
+
 }
 
 def jfrogRefreshToken(String refreshedToken) {
