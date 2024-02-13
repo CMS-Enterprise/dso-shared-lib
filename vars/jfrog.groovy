@@ -19,7 +19,7 @@ def jfrogXray(Map properties=[:]) {
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
                 jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
             """
-            def result = sh "jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'"
+            def result = sh(script: "jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'", returnStdout: true, returnStderr: true).trim()
             logger.info("Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 
                 error()
