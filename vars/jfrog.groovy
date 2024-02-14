@@ -21,7 +21,7 @@ def jfrogXray(Map properties=[:]) {
             """
             // TODO: INTENTIONAL ERROR 0 BELOW vvv
             def result = sh(script: "jf xr curl '/api/v1/artifacts?search=0${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
-            logger.info("Result: ${result}")
+            logger.info("XRay Scan Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 
                 error()
             }
@@ -41,7 +41,6 @@ def jfrogRunXray(Map properties=[:], String repoName) {
         sh""" 
             jf c show
             jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
-            jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ "repo": "${repoName}", "path": "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json"}' | jq '.overall.status'
         """
         def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true)
         logger.info("Status: ${status}")
