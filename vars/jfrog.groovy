@@ -34,16 +34,20 @@ def jfrogXray(Map properties=[:]) {
 
 def jfrogRunXray(Map properties=[:], String repoName) {
     logger.info("Running new XRay Scan")
-    // Need to add project build path and file type to template and properties?? 
-    // Or since we build the application in our pipeline how do we use that? Can we store the output of the build somehow?
+    // TODO: Add watches/policies parameter for pipeline
 
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        sh""" 
-            jf c show
-            jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
-        """
+        // if(properties.build.watches) {
+        //     // Run scan with policies/watches
+        // } else {
+            sh""" 
+                jf c show
+                jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
+            """
+        // }
         def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true)
         logger.info("Status: ${status}")
+
         def retry=0
         while(status.equalsIgnoreCase('SCANNING') || retry < 10) {
             // Waits 30 seconds before trying again, 30 * 1000
