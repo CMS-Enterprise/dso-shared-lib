@@ -37,14 +37,10 @@ def jfrogRunXray(Map properties=[:], String repoName) {
     // TODO: Add watches/policies parameter for pipeline
 
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        // if(properties.build.watches) {
-        //     // Run scan with policies/watches
-        // } else {
-            sh""" 
-                jf c show
-                jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
-            """
-        // }
+        sh""" 
+            jf c show
+            jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
+        """
         def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true)
         logger.info("Status: ${status}")
 
