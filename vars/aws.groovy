@@ -1,10 +1,8 @@
 def assumeRole(String ADOIAMRole) {
-    env.ADOIAMRole = ADOIAMRole
-
     sh """
-        echo "Role ARN: ${env.ADOIAMRole}"
+        echo "Role ARN: ${ADOIAMRole}"
         aws sts assume-role \\
-        --role-arn "${env.ADOIAMRole}" \\
+        --role-arn "${ADOIAMRole}" \\
         --role-session-name session \\
         --output text \\
         --query Credentials \\
