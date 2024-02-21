@@ -1,8 +1,8 @@
-def assumeRole="ADOIAMRole" 
-withEnv(["RoleARN=$assumeRole"]) {
+def roleArn="ADOIAMRole" 
+withEnv(["assumeRole=$roleArn"]) {
         sh '''
               aws sts assume-role \
-                --role-arn $RoleARN \
+                --role-arn $assumeRole \
                 --role-session-name session \
                 --output text \
                 --query Credentials \
