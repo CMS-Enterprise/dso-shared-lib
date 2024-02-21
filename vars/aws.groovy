@@ -1,5 +1,6 @@
-def roleArn="arn:aws:iam::280350076387:role/delegatedadmin/developer/jenkins-role" 
-withEnv(["assumerole=$roleArn"]) {
+def assumeRole(String ADOIAMRole) 
+def roleArn="ADOIAMRole" {
+    withEnv(["assumerole=$roleArn"]) {
         sh '''
               aws sts assume-role \
                 --role-arn $assumerole \
@@ -21,4 +22,5 @@ EOF
                  aws sts get-caller-identity
              
            '''
+        }   
 }
