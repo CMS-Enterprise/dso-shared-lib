@@ -1,6 +1,5 @@
-def roleArn(String ADOIAMRole)  {
-    withEnv(["myvar=$roleArn"]) {
-        sh '''
+def assumeRole(String ADOIAMRole)  {
+     sh '''
               echo $myvar
               aws sts assume-role \
                 --role-arn $myvar \
@@ -21,6 +20,5 @@ EOF
                 
                  aws sts get-caller-identity
              
-           '''
-        }   
-}
+         '''
+  }
