@@ -1,8 +1,8 @@
-def roleArn="ADOIAMRole" 
-withEnv(["myvar=$roleArn"]) {
+def roleArn="arn:aws:iam::280350076387:role/delegatedadmin/developer/jenkins-role" 
+withEnv(["assumerole=$roleArn"]) {
         sh '''
               aws sts assume-role \
-                --role-arn $myvar \
+                --role-arn $assumerole \
                 --role-session-name session \
                 --output text \
                 --query Credentials \
