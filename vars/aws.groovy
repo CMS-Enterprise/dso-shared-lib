@@ -1,4 +1,4 @@
-def assumeRole(String ADOIAMRole)  {
+def roleArn(String ADOIAMRole)  {
     withEnv(["myvar=$ADOIAMRole"]) {
         sh '''
               echo $myvar
