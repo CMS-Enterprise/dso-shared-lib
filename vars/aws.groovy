@@ -1,6 +1,5 @@
-def assumeRole(String ADOIAMRole) 
-def roleArn="ADOIAMRole" {
-    withEnv(["assumerole=$roleArn"]) {
+def assumeRole(String ADOIAMRole)  {
+    withEnv(["assumerole=$adoIAMRole"]) {
         sh '''
               aws sts assume-role \
                 --role-arn $assumerole \
