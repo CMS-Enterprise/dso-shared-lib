@@ -1,24 +1,26 @@
 def assumeRole(String ADOIAMRole)  {
-     sh '''
-              echo $myvar
-              aws sts assume-role \
-                --role-arn $myvar \
-                --role-session-name session \
-                --output text \
-                --query Credentials \
-                > /tmp/role-creds.txt
-    
-              cat > .aws-creds <<EOF
+    withEnv(["iamrole=$ADOIAMRole"]) {
+        sh '''
+            echo $iamrole
+            aws sts assume-role \
+              --role-arn $iamrole \
+              --role-session-name session \
+              --output text \
+              --query Credentials \
+              > /tmp/role-creds.txt
+  
+            cat > .aws-creds <<EOF
 [default]
 aws_access_key_id = $(cut -f1 /tmp/role-creds.txt)
 aws_secret_access_key = $(cut -f3 /tmp/role-creds.txt)
 aws_session_token = $(cut -f4 /tmp/role-creds.txt)
 EOF
     
-                cp -v .aws-creds $HOME/.aws/credentials
-                unset AWS_WEB_IDENTITY_TOKEN_FILE
-                
-                 aws sts get-caller-identity
-             
-         '''
-  }
+            cp -v .aws-creds $HOME/.aws/credentials
+            unset AWS_WEB_IDENTITY_TOKEN_FILE
+            
+            aws sts get-caller-identity
+        
+        '''
+          }
+}
