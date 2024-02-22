@@ -35,6 +35,7 @@ def push(Map properties=[:]) {
 
             mkdir -p /kaniko/.docker
             cp \$BUILD_TOKEN /kaniko/.docker/
+            echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
             ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg TOKEN=${JfrogArt_TOKEN} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
             pwd;ls ${properties.artifactName}-image-properties
         """
