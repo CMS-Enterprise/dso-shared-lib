@@ -13,11 +13,11 @@ def push(Map properties=[:]) {
     // } else {
     //     env.DOCKERPATH = ""
     // }
-    def tagList = "artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${env.GIT_COMMIT}"
+    def tagList = "${properties.build.artifactoryPath}:${env.GIT_COMMIT}"
     if (properties.build.imageTag) {
         tags = properties.build.imageTag.replaceAll("\\s+", "").split(',')
         for (tag in tags) {
-            tagList = "${tagList}" + " -d artifactory.cloud.cms.gov/${properties.build.artifactoryPath}:${tag}"
+            tagList = "${tagList}" + " -d ${properties.build.artifactoryPath}:${tag}"
         }
         logger.info("Building with Tag from Properties File")
     }
