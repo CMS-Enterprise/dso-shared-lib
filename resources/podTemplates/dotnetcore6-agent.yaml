@@ -57,7 +57,7 @@ spec:
         name: "workspace-volume"
         readOnly: false
     - name: kaniko
-      image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
+      image: gcr.io/kaniko-project/executor:debug
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command:
