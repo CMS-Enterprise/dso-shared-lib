@@ -2,6 +2,7 @@ kind: Pod
 metadata:
   name: maven-build
 spec:
+  serviceAccountName: jenkins-role
   containers:
     - name: maven
       image: artifactory.cloud.cms.gov/docker/maven:3.9-amazoncorretto-17
@@ -48,7 +49,7 @@ spec:
         readOnly: false
       workingDir: "/home/jenkins/agent"
     - name: kaniko
-      image: artifactory.cloud.cms.gov/docker/kaniko/executor:debug-1.17.0
+      image: artifactory.cloud.cms.gov/docker/kaniko-project/executor:debug
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command:
