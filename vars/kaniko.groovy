@@ -29,8 +29,8 @@ def push(Map properties=[:]) {
         string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
         sh """
-            mkdir -p $HOME/.aws
-            cp -v .aws-creds $HOME/.aws/credentials
+            mkdir -p ~/.aws
+            cp -v .aws-creds ~/.aws/credentials
             unset AWS_WEB_IDENTITY_TOKEN_FILE
 
             mkdir -p /kaniko/.docker
