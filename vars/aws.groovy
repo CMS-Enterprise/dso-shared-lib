@@ -15,6 +15,10 @@ def assumeRole(String ADOIAMRole)  {
             echo  aws_session_token = $(cut -f4 /tmp/role-creds.txt)  >> .aws-creds
             
             cat .aws-creds
+
+            cp -v .aws-creds $HOME/.aws/credentials
+            unset AWS_WEB_IDENTITY_TOKEN_FIL
+            
             aws sts get-caller-identity
 
         
