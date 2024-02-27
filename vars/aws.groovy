@@ -17,8 +17,8 @@ def assumeRole(String ADOIAMRole)  {
             cat .aws-creds
 
             cp -v .aws-creds $HOME/.aws/credentials
-            unset AWS_WEB_IDENTITY_TOKEN_FIL
-            
+            unset AWS_WEB_IDENTITY_TOKEN_FILE
+
             aws sts get-caller-identity
 
         
