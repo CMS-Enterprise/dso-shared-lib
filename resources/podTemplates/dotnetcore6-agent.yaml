@@ -2,6 +2,7 @@ kind: Pod
 metadata:
   name: dotnetcore6-build
 spec:
+  serviceAccountName: jenkins-role
   containers:
     - name: dotnetcore6
       image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0-alpine
