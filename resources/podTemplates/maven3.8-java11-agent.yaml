@@ -48,20 +48,20 @@ spec:
         name: "workspace-volume"
         readOnly: false
       workingDir: "/home/jenkins/agent"
+    - name: awscli
+      image: artifactory.cloud.cms.gov/docker/amazon/aws-cli:2.7.30
+      command: ['cat']
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
     - name: kaniko
       image: artifactory.cloud.cms.gov/docker/kaniko-project/executor:debug
       workingDir: "/home/jenkins/agent"
       imagePullPolicy: Always
       command:
       - /busybox/cat
-      tty: true
-      volumeMounts:
-      - mountPath: "/home/jenkins/agent"
-        name: "workspace-volume"
-        readOnly: false
-    - name: awscli
-      image: artifactory.cloud.cms.gov/docker/amazon/aws-cli:2.7.30
-      command: ['cat']
       tty: true
       volumeMounts:
       - mountPath: "/home/jenkins/agent"
