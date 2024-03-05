@@ -9,7 +9,7 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
 }
 
 def snykTest(Map snykTestArgs=[:]) {
-    logger.info("Snyk Test2")
+    logger.info("Snyk Test")
     logger.debug("snykTestArgs: ${snykTestArgs}")
     logger.info("Technology: ${snykTestArgs.tech}")
     def xrayCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
