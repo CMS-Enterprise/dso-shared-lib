@@ -1,7 +1,7 @@
 def runSeleniumTests(Map properties=[:]) {
+    logger.info("Tech: ${properties.tech}")
     switch(properties.tech) {
-        logger.info("Tech: ${properties.tech}")
-        case properties.tech.contains("maven"):
+        case "maven3.8":
             runSeleniumTestMaven(properties.selenium)
         case properties.tech.contains("gradle"):
             logger.info("Gradle Selenium")
