@@ -1,28 +1,31 @@
-def runSeleniumTests(Map seleniumTestArgs=[:]) {
+def runSeleniumTests(Map properties=[:]) {
+    switch(seleniumTestArgs.tech) {
+        case properties.tech.contains("maven"):
+            runSeleniumTestMaven(properties.selenium)
+        case properties.tech.contains("gradle"):
+            logger.info("Gradle Selenium")
+        case properties.tech.contains("dotnet"):
+            logger.info("Dotnet Selenium")
+        default:
+            logger.info("Technology not found")
+    } 
+}
+
+def runSeleniumTestMaven(Map seleniumTestArgs=[:]) {
     logger.info("Starting Selenium Tests")
-    logger.debug("seleniumTestArgs: ${seleniumTestArgs.selenium}")
+    logger.debug("seleniumTestArgs: ${seleniumTestArgs}")
     if (!seleniumTestArgs.containsKey("testUrl")) {
         throw new IllegalArgumentException("testUrl is a mandatory parameter for Selenium testing.")
     }
-    
-    def testUrl = seleniumTestArgs.get("testUrl")
-    def browser = seleniumTestArgs.get("browser", "chrome")
-    def video = seleniumTestArgs.get("video", "false")
-    // I have questions about the below 2 vars
-    def credentialsId = seleniumTestArgs.get("credentialsId", "selenium-access-token")
-    def mavenConfigFileId = seleniumTestArgs.get("mavenConfigFileId")
 
-    logger.info("Technology: ${seleniumTestArgs.tech}")
-    logger.info("Test URL: ${testUrl}")
-    logger.info("Browser: ${browser}")
-    logger.info("Video Enabled: ${video}")
+    logger.info("Test URL: ${seleniumTestArgs.testUrl}")
+    logger.info("Browser: ${seleniumTestArgs.browser}")
+    logger.info("Video Enabled: ${seleniumTestArgs.video}")
 
-    def mvnCommand = "mvn -s ${mavenConfigFileId} clean test -Ds.url=${testUrl} -Ds.token=\$TOKEN -Ds.browser=${browser} -Ds.video=${video}"
-
-    withCredentials([string(credentialsId: "${credentialsId}", variable: "TOKEN")]) {
+    withCredentials([string(credentialsId: "${seleniumTestArgs.credentialsId}", variable: "TOKEN")]) {
         sh """
             cd test/maven
-            ${mvnCommand}
+            mvn -s ${seleniumTestArgs.mavenConfigFile} clean test -Ds.url=${seleniumTestArgs.testUrl} -Ds.token=${TOKEN} -Ds.browser=${seleniumTestArgs.browser} -Ds.video=${seleniumTestArgs.video}
         """
     }
     
