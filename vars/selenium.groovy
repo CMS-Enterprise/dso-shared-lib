@@ -1,5 +1,5 @@
 def runSeleniumTests(Map properties=[:]) {
-    switch(seleniumTestArgs.tech) {
+    switch(properties.tech) {
         case properties.tech.contains("maven"):
             runSeleniumTestMaven(properties.selenium)
         case properties.tech.contains("gradle"):
