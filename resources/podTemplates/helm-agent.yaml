@@ -1,0 +1,28 @@
+kind: Pod
+metadata:
+  name: helm-deploy
+spec:
+  serviceAccountName: jenkins-role
+  containers:
+    - name: maven
+      image: artifactory.cloud.cms.gov/docker/maven:3.8-amazoncorretto-17
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: dotnetcore6
+      image: artifactory.cloud.cms.gov/docker/dotnet/sdk:6.0-alpine
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
