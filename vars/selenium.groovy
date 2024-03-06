@@ -2,11 +2,15 @@ def runSeleniumTests(Map properties=[:]) {
     logger.info("Tech: ${properties.tech}")
     switch(properties.tech) {
         case "maven3.8":
+        case "maven3.9":
             runSeleniumTestMaven(properties.selenium)
-        case properties.tech.contains("gradle"):
+            break;
+        case "gradle":
             logger.info("Gradle Selenium")
-        case properties.tech.contains("dotnet"):
+            break;
+        case "dotnet6":
             logger.info("Dotnet Selenium")
+            break;
         default:
             logger.info("Technology not found")
     } 
@@ -25,7 +29,6 @@ def runSeleniumTestMaven(Map seleniumTestArgs=[:]) {
 
     withCredentials([string(credentialsId: "${seleniumTestArgs.credentialsId}", variable: "TOKEN")]) {
         sh """
-            cd test/maven
             mvn -s ${seleniumTestArgs.mavenConfigFile} clean test -Ds.url=${seleniumTestArgs.testUrl} -Ds.token=${TOKEN} -Ds.browser=${seleniumTestArgs.browser} -Ds.video=${seleniumTestArgs.video}
         """
     }
