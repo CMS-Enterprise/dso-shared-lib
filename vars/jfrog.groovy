@@ -44,7 +44,7 @@ def jfrogRunXray(Map properties=[:], String repoName) {
         logger.info("Status: ${status}")
 
         def retry=0
-        while(!status.equalsIgnoreCase('DONE') || retry < 10) {
+        while(!status.equalsIgnoreCase('DONE') && retry < 10) {
             // Waits 30 seconds before trying again, 30 * 1000
             Thread.sleep(30000)
             status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true).trim()
