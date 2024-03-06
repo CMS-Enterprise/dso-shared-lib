@@ -29,7 +29,7 @@ def runSeleniumTestMaven(Map seleniumTestArgs=[:]) {
 
     withCredentials([string(credentialsId: "${seleniumTestArgs.credentialsId}", variable: "TOKEN")]) {
         sh """
-            mvn -s ${seleniumTestArgs.mavenConfigFile} clean test -Ds.url=${seleniumTestArgs.testUrl} -Ds.token=${TOKEN} -Ds.browser=${seleniumTestArgs.browser} -Ds.video=${seleniumTestArgs.video}
+            mvn -s ${seleniumTestArgs.mavenConfigFile} ${seleniumTestArgs.testArgs} -Ds.url=${seleniumTestArgs.testUrl} -Ds.token=${TOKEN} -Ds.browser=${seleniumTestArgs.browser} -Ds.video=${seleniumTestArgs.video}
         """
     }
     
