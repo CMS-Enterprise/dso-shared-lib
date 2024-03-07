@@ -1,12 +1,12 @@
-def build(){
+def build(String buildArgs=""){
     logger.info("starting dotnet build")
     sh """
-    dotnet build
+    dotnet ${buildArgs)}
     """
 }
-def test(){
+def test(String testArgs=""){
     logger.info("starting dotnet test")
     sh """
-    dotnet test
+    dotnet ${testArgs}
     """
 }

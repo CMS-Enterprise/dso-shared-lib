@@ -4,17 +4,17 @@ def compile(String buildArgs="") {
     // }
     logger.info("Maven compiling")
     logger.debug("buildArgs: ${buildArgs}")
-    sh "mvn ${buildParam}"
+    sh "mvn ${buildArgs}"
 }
 
 def test(String testArgs="") {
     logger.info("Maven testing")
     logger.debug("testArgs: ${testArgs}")
-    sh "mvn ${testParam}"
+    sh "mvn ${testArgs}"
 }
 
 def mvnPackage(String packageArgs="") {
     logger.info("Maven packaging")
     logger.debug("packageArgs: ${packageArgs}")
-    sh "mvn ${packageParam}"
+    sh "mvn ${packageArgs}"
 }
