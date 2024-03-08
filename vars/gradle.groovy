@@ -1,15 +1,13 @@
 def gradleBuild(String buildArgs="") {
     logger.info("Gradle build")
     logger.debug("buildArgs: ${buildArgs}")
-    buildParam = buildArgs?: "clean build"
-    sh "chmod +x gradlew; ./gradlew ${buildParam}"
+    sh "chmod +x gradlew; ./gradlew ${buildArgs}"
 }
 
 def gradleTest(String testArgs="") {
     logger.info("Gradle test")
     logger.debug("testArgs: ${testArgs}")
-    testParam = testArgs?: "test"
-    sh "chmod +x gradlew; ./gradlew ${testParam}"
+    sh "chmod +x gradlew; ./gradlew ${testArgs}"
 }
 
 def setGradlePropsFile() {
