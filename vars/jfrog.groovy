@@ -82,29 +82,40 @@ def upload(Map properties=[:]) {
         logger.info("Dockerfile provided")
         return 
     }
-    logger.info("Artifactory upload Initiated")
-    switch (type) {
-        case 'awsCf':
-            path = path_builder(properties, true)
-            for (entry in properties?.build.aws.packages) {
-                file = entry.packageName
-                upload_call(path, file)
-            }
-        default:
-            file = properties?.build?.packageName
-            path = path_builder(properties, false)
-            upload_call(path, file)
+    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
+        // TODO: Need to figure out ${file} ${path}/${file}
+        sh "jf rt u --url=https://artifactory.cloud.cms.gov/ --access-token ${TOKEN} ${file} ${path}/${file} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
     }
 }
 
-def upload_call(String path, String file) {
-    def Map defaults = digestParameters()
-    withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
-        sh "jfrog rt u --url ${defaults.url} --access-token ${TOKEN} ${file} ${path}/${file} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
-        //we capture the build info for an artifact when we upload it
-        //Assumed information will be relevant during this CI Build process, so using job name and build number as variables to store
-    }
-}
+// def upload(Map properties=[:]) {
+//     if(properties.dockerFile != ("" || null)) { 
+//         logger.info("Dockerfile provided")
+//         return 
+//     }
+//     logger.info("Artifactory upload Initiated")
+//     switch (type) {
+//         case 'awsCf':
+//             path = path_builder(properties, true)
+//             for (entry in properties?.build.aws.packages) {
+//                 file = entry.packageName
+//                 upload_call(path, file)
+//             }
+//         default:
+//             file = properties?.build?.packageName
+//             path = path_builder(properties, false)
+//             upload_call(path, file)
+//     }
+// }
+
+// def upload_call(String path, String file) {
+//     def Map defaults = digestParameters()
+//     withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
+//         sh "jfrog rt u --url ${defaults.url} --access-token ${TOKEN} ${file} ${path}/${file} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+//         //we capture the build info for an artifact when we upload it
+//         //Assumed information will be relevant during this CI Build process, so using job name and build number as variables to store
+//     }
+// }
 
 def digestParameters(Map parameters=[:]) {
     def defaultMap = [
