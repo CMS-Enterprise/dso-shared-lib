@@ -76,3 +76,88 @@ def jfrogRefreshToken(String refreshedToken) {
         '''
     }
 }
+
+def upload(Map properties=[:]) {
+    if(properties.dockerFile != ("" || null)) { 
+        logger.info("Dockerfile provided")
+        return 
+    }
+    logger.info("Artifactory upload Initiated")
+    switch (type) {
+        case 'awsCf':
+            path = path_builder(properties, true)
+            for (entry in properties?.build.aws.packages) {
+                file = entry.packageName
+                upload_call(path, file)
+            }
+        default:
+            file = properties?.build?.packageName
+            path = path_builder(properties, false)
+            upload_call(path, file)
+    }
+}
+
+def upload_call(String path, String file) {
+    def Map defaults = digestParameters()
+    withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
+        sh "jfrog rt u --url ${defaults.url} --access-token ${TOKEN} ${file} ${path}/${file} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+        //we capture the build info for an artifact when we upload it
+        //Assumed information will be relevant during this CI Build process, so using job name and build number as variables to store
+    }
+}
+
+def digestParameters(Map parameters=[:]) {
+    def defaultMap = [
+        url:"https://${env.artifactoryUrl}/artifactory",
+        org: "com/customer",
+    ]
+    logger.debug("parameters: ${parameters}")
+    return defaultMap
+}
+
+def buildPublish(Map parameters=[:]) {
+    //Optional functionality. Return if non-container build
+    if(CONTAINER_BUILD ==~ /(?i)(false|FALSE)/) { return }
+    logger.debug("Debug buildpublish:${parameters}")
+    logger.info("buildPublish Initiated")
+    def Map defaults = digestParameters()
+    withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
+        sh "jfrog rt bp --url ${defaults.url} --access-token ${TOKEN} --build-url ${env.JOB_URL} ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        //Publish the captured build info
+        //Likely run after a Kaniko build
+        //https://github.com/jfrogrog/project-examples/tree/master/docker-oci-examples/kaniko-example
+        //Leave this here to be available, but call in Kaniko?
+    }
+}
+
+def buildDockerCreate(Map parameters=[:], multiTags = false, tagFile = ""){ //multiTag and tagFile used for buildDockerCreateAndPublish
+    //Optional functionality. Return if non-container build
+    if(CONTAINER_BUILD ==~ /(?i)(false|FALSE)/) { return }
+    logger.info("buildDockerCreate Initiated")
+    def Map defaults = digestParameters()
+    logger.info("env.JOB_NAME: ${env.JOB_NAME}")
+    logger.info("env.BUILD_NUMBER: ${env.BUILD_NUMBER}")
+    logger.info("parameters.appName: ${parameters.appName}")
+    logger.info("parameters.build.repo: ${parameters.build.repo}")
+    withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
+        //If calling from buildDockerCreateAndPublish, we're using multiple tags, so we want to pass a different image-file each time.
+        if (multiTags == false) {
+            sh "jfrog rt bdc --url ${defaults.url} --access-token ${TOKEN} ${parameters.build.repo} --image-file ${parameters.appName}-file-details --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+        }
+        else {
+            sh "jfrog rt bdc --url ${defaults.url} --access-token ${TOKEN} ${parameters.build.repo} --image-file ${tagFile} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+        }
+    }
+}
+def buildDockerCreateAndPublish(Map parameters=[:]){
+    //Optional functionality. Return if non-container build
+    if(CONTAINER_BUILD ==~ /(?i)(false|FALSE)/) { return }
+    logger.info("buildDockerCreateAndPublish Initiated")
+    // Split the file-details file into multiple files one for each tag, then call buildDockerCreate for each one.
+    sh "split -l 1 ${parameters.appName}-file-details tag-"
+    tagFiles = sh(returnStdout: true, script: "ls -1 tag-*").trim()
+    for (file in tagFiles.split('\n')) {
+        buildDockerCreate(parameters, true, file)
+        buildPublish(parameters)
+    }
+}

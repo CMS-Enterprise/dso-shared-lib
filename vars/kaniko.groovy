@@ -1,4 +1,8 @@
 def push(Map properties=[:]) {
+    if (properties.build.dockerFile == ("" || null)) { 
+        logger.info("No Dockerfile provided")
+        return 
+    }
     def ignorePaths = ["/var/spool"]
     def ignorePathArg = ""
     // Build the string arg for each path
