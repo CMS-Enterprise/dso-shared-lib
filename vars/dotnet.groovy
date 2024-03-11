@@ -1,7 +1,7 @@
 def build(String buildArgs=""){
     logger.info("starting dotnet build")
     sh """
-    dotnet ${buildArgs)}
+    dotnet ${buildArgs}
     """
 }
 def test(String testArgs=""){
