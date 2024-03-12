@@ -1,4 +1,5 @@
 def push(Map properties=[:]) {
+    logger.info("Dockerfile: ${properties.build.dockerFile}")
     if(properties.build.dockerFile?.trim()) { 
         logger.info("No Dockerfile provided")
         return 
