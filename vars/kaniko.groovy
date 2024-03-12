@@ -1,8 +1,9 @@
 def push(Map properties=[:]) {
-    if (properties.build.dockerFile == ("" || null)) { 
+    if (properties.build.dockerFile?.trim()) { 
         logger.info("No Dockerfile provided")
         return 
     }
+    logger.info("Kaniko Push Started")
     def ignorePaths = ["/var/spool"]
     def ignorePathArg = ""
     // Build the string arg for each path
