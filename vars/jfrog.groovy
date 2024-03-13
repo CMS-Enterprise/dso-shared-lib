@@ -86,10 +86,9 @@ def upload(Map properties=[:]) {
         logger.info("Dockerfile provided")
         return 
     }
-    def FILE = properties.artifactPackagePath.split("/")[-1]
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
         // TODO: Need to figure out ${file} ${path}/${file}
-        sh "jf rt u --url=https://artifactory.cloud.cms.gov/ --access-token ${TOKEN} $FILE ${properties.artifactPackagePath} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
+        sh "jf rt u --url=https://artifactory.cloud.cms.gov/ --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
     }
 }
 
