@@ -82,7 +82,7 @@ def jfrogRefreshToken(String refreshedToken) {
 }
 
 def upload(Map properties=[:]) {
-    if(properties.dockerFile != ("" || null)) { 
+    if(properties.build.dockerFile?.trim()) { 
         logger.info("Dockerfile provided")
         return 
     }
