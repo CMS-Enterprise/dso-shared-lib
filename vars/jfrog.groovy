@@ -9,6 +9,10 @@ def jfrogPublishBuild(Map properties=[:]) {
 }
 
 def jfrogXray(Map properties=[:]) {
+    if(properties.build.artifactoryPath.contains("amazonaws")) {
+        logger.info("Artifact not stored in Artifactory")
+        return
+    }
     logger.info("JFrog XRay Scan")
     // jfrogPublishBuild(properties)
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
@@ -33,10 +37,6 @@ def jfrogXray(Map properties=[:]) {
 }
 
 def jfrogRunXray(Map properties=[:], String repoName) {
-    if(properties.build.artifactoryPath.contains("amazonaws")) {
-        logger.info("Artifact not stored in Artifactory")
-        return
-    }
     logger.info("Running new XRay Scan")
 
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
