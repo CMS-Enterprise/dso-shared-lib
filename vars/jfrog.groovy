@@ -88,7 +88,7 @@ def upload(Map properties=[:]) {
     }
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
         // TODO: Need to figure out ${file} ${path}/${file}
-        sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
+        sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
     }
 }
 
