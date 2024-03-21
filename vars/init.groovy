@@ -22,8 +22,10 @@ def paramValidator(Map properties=[:]) {
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         error("Parameter validation failed")
     }
-
-    if (!properties?.trim()) {
+    if (!properties) {
+        logger.info("How did you even do that? There's literally no properties.")
         error("BOOOOOOOO TOMATO TOMATO TOMATO")
     }
+
+    logger.info("Parameters validated. Proceeding with pipeline.")
 }
