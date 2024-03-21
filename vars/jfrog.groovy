@@ -3,7 +3,7 @@ def jfrogXray(Map properties=[:]) {
         logger.info("Artifact not stored in Artifactory")
         return
     } else if(properties.build.fileName) {
-        logger.info("JFrog XRay API check for zip files not currently supported")
+        logger.info("JFrog XRay API check for zip files not currently supported, please check UI for zip scan results")
         return
     }
 
