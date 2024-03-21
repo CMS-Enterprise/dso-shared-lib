@@ -4,10 +4,10 @@ def jfrogXray(Map properties=[:]) {
         return
     }
 
-    def repoName = properties.build.artifactoryPath.split("/")[0]
+    def repoName = properties.build.artifactoryPath.substring(0, properties.build.artifactoryPath.indexOf('/'))
     def searchPath
     if(properties.build.fileName) {
-        def relativeArtifactPath = properties.build.artifactoryPath.substring(properties.build.artifactoryPath.indexOf('/'))
+        def relativeArtifactPath = properties.build.artifactoryPath.substring(properties.build.artifactoryPath.indexOf('/')+1)
         searchPath = "${properties.relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
     } else {
         searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
