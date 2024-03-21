@@ -2,7 +2,7 @@ def paramValidator(Map properties=[:]) {
     logger.info("Validating parameters...")
 
     logger.info("Validating artifact paths")
-    if(properties.artifactPackagePath? && properties.build.artifactoryPath?) {
+    if(properties.artifactPackagePath && properties.build.artifactoryPath) {
         logger.info("Artifact Package Path provided AND Artifactory Package URL provided, these are mutually exclusive.")
         logger.info("Please only provide \"Path to your artifact\" if your artifact is zip/binary based")
         logger.info("Please only provide \"URL to Artifact in Jfrog Artifactory or ECR\" if your artifact is image based")
