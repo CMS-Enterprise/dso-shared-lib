@@ -1,30 +1,28 @@
-def jfrogPublishBuild(Map properties=[:]) {
-    logger.info("Publish build to JFrog")
-    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        sh"""
-            jf rt bce --project=${properties.artifactoryProjectName} ${properties.artifactName} ${env.GIT_COMMIT}
-            jf rt bp --url=https://artifactory.cloud.cms.gov/artifactory --access-token=${TOKEN} --project=${properties.artifactoryProjectName} ${properties.artifactName} ${env.GIT_COMMIT}
-        """
-    }
-}
-
 def jfrogXray(Map properties=[:]) {
     if(properties.build.artifactoryPath.contains("amazonaws")) {
         logger.info("Artifact not stored in Artifactory")
         return
     }
+
+    def repoName = properties.build.artifactoryPath.split("/")[0]
+    def searchPath
+    if(properties.build.fileName) {
+        def relativeArtifactPath = properties.build.artifactoryPath.split("/")[1]
+        searchPath = "${properties.relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
+    } else {
+        searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
+    }
+
     logger.info("JFrog XRay Scan")
     // jfrogPublishBuild(properties)
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        def repoName = properties.build.artifactoryPath.split("/")[0]
         try {
             sh"""
                 apk add --no-cache bash jq
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
-                jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues' 
+                jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues' 
             """
-            // TODO: INTENTIONAL ERROR 0 BELOW vvv
-            def result = sh(script: "jf xr curl '/api/v1/artifacts?search=0${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
+            def result = sh(script: "jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
             logger.info("XRay Scan Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 
                 error()
@@ -37,11 +35,17 @@ def jfrogXray(Map properties=[:]) {
 }
 
 def jfrogRunXray(Map properties=[:], String repoName) {
-    logger.info("Running new XRay Scan")
+    if(properties.build.fileName) {
+        zipScan(properties, repoName)
+    } else {
+        imageScan(properties, repoName)
+    }  
+}
 
+def imageScan(Map properties=[:], String repoName) {
+    logger.info("Running new XRay Scan")
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
         sh""" 
-            jf c show
             jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
         """
         def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true)
@@ -59,10 +63,22 @@ def jfrogRunXray(Map properties=[:], String repoName) {
         sh """
             jf xr curl '/api/v1/artifacts?search=${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}' | jq '.data[0].sec_issues'
         """
-
-        // While : ; do thing_one; thing_two; sleep 5; done
     }
+}
 
+def zipScan(Map properties=[:], String repoName) {
+    logger.info("On-demand zip file scanning not currently supported")
+}
+
+def upload(Map properties=[:]) {
+    if(properties.build.dockerFile?.trim()) { 
+        logger.info("Dockerfile provided")
+        return 
+    }
+    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
+        // TODO: Need to figure out ${file} ${path}/${file}
+        sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
+    }
 }
 
 def jfrogRefreshToken(String refreshedToken) {
@@ -80,55 +96,6 @@ def jfrogRefreshToken(String refreshedToken) {
         '''
     }
 }
-
-def upload(Map properties=[:]) {
-    if(properties.build.dockerFile?.trim()) { 
-        logger.info("Dockerfile provided")
-        return 
-    }
-    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
-        // TODO: Need to figure out ${file} ${path}/${file}
-        sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
-    }
-}
-
-// def upload(Map properties=[:]) {
-//     if(properties.dockerFile != ("" || null)) { 
-//         logger.info("Dockerfile provided")
-//         return 
-//     }
-//     logger.info("Artifactory upload Initiated")
-//     switch (type) {
-//         case 'awsCf':
-//             path = path_builder(properties, true)
-//             for (entry in properties?.build.aws.packages) {
-//                 file = entry.packageName
-//                 upload_call(path, file)
-//             }
-//         default:
-//             file = properties?.build?.packageName
-//             path = path_builder(properties, false)
-//             upload_call(path, file)
-//     }
-// }
-
-// def upload_call(String path, String file) {
-//     def Map defaults = digestParameters()
-//     withCredentials([string(credentialsId: "${env.artifactoryCredentialId}", variable: 'TOKEN')]) {
-//         sh "jfrog rt u --url ${defaults.url} --access-token ${TOKEN} ${file} ${path}/${file} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
-//         //we capture the build info for an artifact when we upload it
-//         //Assumed information will be relevant during this CI Build process, so using job name and build number as variables to store
-//     }
-// }
-
-// def digestParameters(Map parameters=[:]) {
-//     def defaultMap = [
-//         url:"https://${env.artifactoryUrl}/artifactory",
-//         org: "com/customer",
-//     ]
-//     logger.debug("parameters: ${parameters}")
-//     return defaultMap
-// }
 
 def buildPublish(Map parameters=[:]) {
     //Optional functionality. Return if non-container build
@@ -174,5 +141,15 @@ def buildDockerCreateAndPublish(Map parameters=[:]){
     for (file in tagFiles.split('\n')) {
         buildDockerCreate(parameters, true, file)
         buildPublish(parameters)
+    }
+}
+
+def jfrogPublishBuild(Map properties=[:]) {
+    logger.info("Publish build to JFrog")
+    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
+        sh"""
+            jf rt bce --project=${properties.artifactoryProjectName} ${properties.artifactName} ${env.GIT_COMMIT}
+            jf rt bp --url=https://artifactory.cloud.cms.gov/artifactory --access-token=${TOKEN} --project=${properties.artifactoryProjectName} ${properties.artifactName} ${env.GIT_COMMIT}
+        """
     }
 }
