@@ -4,6 +4,7 @@ def jfrogXray(Map properties=[:]) {
         return
     }
 
+    logger.info("artifactory path: " ${properties.build.artifactoryPath})
     def repoName = properties.build.artifactoryPath.substring(0, properties.build.artifactoryPath.indexOf('/'))
     def searchPath
     if(properties.build.fileName) {
