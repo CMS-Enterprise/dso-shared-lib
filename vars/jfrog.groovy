@@ -12,6 +12,7 @@ def jfrogXray(Map properties=[:]) {
     logger.info("relativeArtifactPath: ${relativeArtifactPath}")
     def searchPath
     if(properties.build.fileName) {  
+        logger.info("Zip path")
         searchPath = "${properties.relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
     } else {
         searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
