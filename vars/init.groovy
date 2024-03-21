@@ -17,7 +17,7 @@ def paramValidator(Map properties=[:]) {
     }
     
     logger.info("Validating ECR & artifact type")
-    if(properties.build.artifactoryPath.contains("amazonaws") && properties.build.zipPath?.trim()) {
+    if(properties.build.artifactoryPath.contains("amazonaws") && properties.build.zipPath) {
         logger.info("AWS ECR upload URL, but artifact is a zip file.")
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         error("Parameter validation failed")
