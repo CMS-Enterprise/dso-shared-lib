@@ -2,13 +2,15 @@ def jfrogXray(Map properties=[:]) {
     if(properties.build.artifactoryPath.contains("amazonaws")) {
         logger.info("Artifact not stored in Artifactory")
         return
+    } else if(properties.build.fileName) {
+        logger.info("JFrog XRay API check for zip files not currently supported")
+        return
     }
 
     def repoName = properties.artifactPackagePath.split("/")[0]
     def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
     def searchPath
     if(properties.build.fileName) {  
-        logger.info("Zip path")
         searchPath = "${relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
     } else {
         searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
