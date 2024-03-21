@@ -7,7 +7,7 @@ def jfrogXray(Map properties=[:]) {
     def repoName = properties.artifactPackagePath.split("/")[0]
     def searchPath
     if(properties.build.fileName) {
-        def relativeArtifactPath = properties.artifactPackagePath.substring(properties.artifactPackagePath.indexOf("/")+1)
+        def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
         searchPath = "${properties.relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
     } else {
         searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
@@ -76,7 +76,6 @@ def upload(Map properties=[:]) {
         return 
     }
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
-        // TODO: Need to figure out ${file} ${path}/${file}
         sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
     }
 }
