@@ -4,10 +4,13 @@ def jfrogXray(Map properties=[:]) {
         return
     }
 
-    def repoName = properties.artifactPackagePath.split("/")[0]
+    logger.info("artifactPackagePath: ${properties.artifactPackagePath}")
+    def artifactPackagePathSplit = properties.artifactPackagePath.split("/")
+    logger.info("artifactPackagePathSplit: ${artifactPackagePathSplit}")
+    def repoName = artifactPackagePathSplit[0]
+    def relativeArtifactPath = artifactPackagePathSplit[1]
     def searchPath
-    if(properties.build.fileName) {
-        logger.info("artifactPackagePath: ${properties.artifactPackagePath}")
+    if(properties.build.fileName) {  
         def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
         searchPath = "${properties.relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
     } else {
