@@ -1,5 +1,5 @@
 def assumeRole(String ADOIAMRole)  {
-  if(ADOIAMRole?.trim()) {
+  if(!ADOIAMRole?.trim()) {
     logger.info("No IAM Role defined")
     return
   } else {
