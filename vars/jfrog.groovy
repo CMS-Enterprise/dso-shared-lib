@@ -3,10 +3,6 @@ def jfrogXray(Map properties=[:]) {
         logger.info("Artifact not stored in Artifactory")
         return
     } 
-    // else if(properties.build.fileName.contains(".zip")) {
-    //     logger.info("JFrog XRay API check for zip files not currently supported, please check UI for zip scan results")
-    //     return
-    // }
 
     def repoName = properties.artifactPackagePath.split("/")[0]
     def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
@@ -24,7 +20,6 @@ def jfrogXray(Map properties=[:]) {
             sh"""
                 apk add --no-cache bash jq
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
-                jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues' 
             """
             def result = sh(script: "jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
             logger.info("XRay Scan Result: ${result}")
