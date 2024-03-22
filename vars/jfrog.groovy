@@ -21,7 +21,8 @@ def jfrogXray(Map properties=[:]) {
                 apk add --no-cache bash jq
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             """
-            def result = sh(script: "jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
+            // TODO: INTENTIONAL ERROR CASE 0 BELOW VVV
+            def result = sh(script: "jf xr curl '/api/v1/artifacts?search=0${searchPath}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
             logger.info("XRay Scan Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 
                 error()
