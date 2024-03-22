@@ -43,7 +43,7 @@ def jfrogRunXray(Map properties=[:], String repoName) {
 }
 
 def imageScan(Map properties=[:], String repoName) {
-    logger.info("Running new XRay Scan")
+    logger.info("Running new Image XRay Scan")
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
         sh "jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ \"componentID\": \"docker://${properties.artifactName}:${env.GIT_COMMIT}\"}'"
 
@@ -69,9 +69,9 @@ def zipScan(Map properties=[:], String repoName) {
     // logger.info("On-demand zip file scanning not currently supported")
     // return
 
-    logger.info("Running new XRay Scan")
+    logger.info("Running new Zip XRay Scan")
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        sh "jf xr curl 'api/v2/index' --header 'Content-Type: application/json' --data '{   \"repo_path\":\"${properties.artifactPackagePath}/${properties.build.fileName}\"     }"
+        sh "jf xr curl 'api/v2/index' --header 'Content-Type: application/json' --data '{   \"repo_path\":\"${properties.artifactPackagePath}/${properties.build.fileName}\"     }'"
     
         def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${properties.build.fileName}\"}' | jq -r '.overall.status'", returnStdout: true).trim()
         logger.info("Status: ${status}")
