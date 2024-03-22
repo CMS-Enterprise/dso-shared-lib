@@ -2,16 +2,17 @@ def jfrogXray(Map properties=[:]) {
     if(properties.build.artifactoryPath.contains("amazonaws")) {
         logger.info("Artifact not stored in Artifactory")
         return
-    } else if(properties.build.fileName) {
-        logger.info("JFrog XRay API check for zip files not currently supported, please check UI for zip scan results")
-        return
-    }
+    } 
+    // else if(properties.build.fileName.contains(".zip")) {
+    //     logger.info("JFrog XRay API check for zip files not currently supported, please check UI for zip scan results")
+    //     return
+    // }
 
     def repoName = properties.artifactPackagePath.split("/")[0]
     def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
     def searchPath
-    if(properties.build.fileName) {  
-        searchPath = "${relativeArtifactPath}/${properties.build.fileName}&repo=${repoName}"
+    if(properties.build.fileName.contains(".zip")) {  
+        searchPath = "${properties.build.fileName}&repo=${repoName}"
     } else {
         searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
     }
@@ -38,7 +39,7 @@ def jfrogXray(Map properties=[:]) {
 }
 
 def jfrogRunXray(Map properties=[:], String repoName) {
-    if(properties.build.fileName) {
+    if(properties.build.fileName.contains(".zip")) {
         zipScan(properties, repoName)
     } else {
         imageScan(properties, repoName)
