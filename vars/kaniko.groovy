@@ -33,11 +33,14 @@ def push(Map properties=[:]) {
         string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
         string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
+        if(properties.adoIAMRole?.trim()) { 
+            sh """
+                mkdir -p ~/.aws
+                cp -v .aws-creds ~/.aws/credentials
+                unset AWS_WEB_IDENTITY_TOKEN_FILE
+            """
+        }
         sh """
-            mkdir -p ~/.aws
-            cp -v .aws-creds ~/.aws/credentials
-            unset AWS_WEB_IDENTITY_TOKEN_FILE
-
             mkdir -p /kaniko/.docker
             cp \$BUILD_TOKEN /kaniko/.docker/
             echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json

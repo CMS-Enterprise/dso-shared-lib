@@ -18,6 +18,10 @@ def paramValidator(Map properties=[:]) {
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         failure+=1
     }
+    if(!properties.build.dockerfile.trim() && !properties.build.fileName.trim()) {
+        logger.info("Dockerfile and Zip file provided. Please choose 1 packaging type for upload.")
+        failure+=1
+    }
     if (!properties) {
         logger.info("How did you even do that? There's literally no properties.")
         error("BOOOOOOOO TOMATO TOMATO TOMATO")
