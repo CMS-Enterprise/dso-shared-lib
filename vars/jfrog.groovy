@@ -4,6 +4,7 @@ def jfrogXray(Map properties=[:]) {
         return
     } 
 
+    logger.info("${properties.artifactPackagePath}")
     def repoName = properties.artifactPackagePath.split("/")[0]
     def relativeArtifactPath = properties.artifactPackagePath.split("/")[1]
     def searchPath
@@ -94,7 +95,7 @@ def zipScan(Map properties=[:], String repoName) {
 def upload(Map properties=[:]) {
     if(properties.build.dockerFile?.trim()) { 
         logger.info("Dockerfile provided")
-        return 
+        return
     }
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
         sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"

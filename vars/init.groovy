@@ -22,6 +22,10 @@ def paramValidator(Map properties=[:]) {
         logger.info("Dockerfile and Zip file provided. Please choose 1 packaging type for upload.")
         failure+=1
     }
+    if(properties.artifactPackagePath.contains("https://")) {
+        logger.info("Please remove \"https://\" from the upload URL.")
+        failure+=1
+    }
     if (!properties) {
         logger.info("How did you even do that? There's literally no properties.")
         error("BOOOOOOOO TOMATO TOMATO TOMATO")
