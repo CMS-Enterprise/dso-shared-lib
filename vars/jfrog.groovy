@@ -1,6 +1,6 @@
 def jfrogXray(Map properties=[:]) {
     if(properties.build.artifactoryPath.contains("amazonaws")) {
-        logger.info("Artifact not stored in Artifactory")
+        logger.info("Artifact not stored in Artifactory, skipping JFrog XRay")
         return
     } 
 
@@ -93,7 +93,7 @@ def zipScan(Map properties=[:], String repoName) {
 
 def upload(Map properties=[:]) {
     if(properties.build.dockerFile?.trim()) { 
-        logger.info("Dockerfile provided")
+        logger.info("Dockerfile provided, skipping manual upload")
         return
     }
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
