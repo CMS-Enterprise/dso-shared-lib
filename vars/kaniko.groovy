@@ -27,20 +27,46 @@ def push(Map properties=[:]) {
         logger.info("Building with Tag from Properties File")
     }
     def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${env.GIT_COMMIT}-file-details --digest-file=${env.GIT_COMMIT}-image-properties --verbosity=info"
+    
+    if(properties.adoIAMRole?.trim() && properties.build.artifactoryPath.contains("amazonaws")) {
+        logger.info("Pushing to ECR")
+        ecrPush(properties, baseCommand)
+    } else if(properties.build.artifactoryPath.contains("artifactory")) {
+        logger.info("Pushing to Artifactory")
+        artifactoryPush(properties, baseCommand)
+    } else {
+        logger.info("Artifact Path URL invalid")
+        error("Artifact Path URL invalid")
+    }
+}
+
+def artifactoryPush(Map properties=[:], String baseCommand) {
     withCredentials([
         file(credentialsId: "JfrogArt-SA-rw-kaniko",variable: 'BUILD_TOKEN'),
         usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
         string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
         string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
-        if(properties.adoIAMRole?.trim()) { 
-            sh """
-                mkdir -p ~/.aws
-                cp -v .aws-creds ~/.aws/credentials
-                unset AWS_WEB_IDENTITY_TOKEN_FILE
-            """
-        }
         sh """
+            mkdir -p /kaniko/.docker
+            cp \$BUILD_TOKEN /kaniko/.docker/
+            ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg TOKEN=${JfrogArt_TOKEN} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
+            pwd;ls ${env.GIT_COMMIT}-image-properties
+        """
+    }
+}
+
+def ecrPush(Map properties=[:], String baseCommand) {
+    withCredentials([
+        file(credentialsId: "JfrogArt-SA-rw-kaniko",variable: 'BUILD_TOKEN'),
+        usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
+        string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
+        string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
+        /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
+        sh """
+            mkdir -p ~/.aws
+            cp -v .aws-creds ~/.aws/credentials
+            unset AWS_WEB_IDENTITY_TOKEN_FILE
             mkdir -p /kaniko/.docker
             cp \$BUILD_TOKEN /kaniko/.docker/
             echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
