@@ -13,7 +13,7 @@ def paramValidator(Map properties=[:]) {
         logger.info("Please provide IAM Role to be assumed in the account where the artifact will be uploaded.")
         failure+=1
     }
-    if(properties.build.artifactoryPath.contains("amazonaws") && properties.build.zipPath) {
+    if(properties.build.artifactoryPath.contains("amazonaws") && (properties.build.zipPath || properties.buil.fileName)) {
         logger.info("AWS ECR upload URL, but artifact is a zip file.")
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         failure+=1
