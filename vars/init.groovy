@@ -18,7 +18,7 @@ def paramValidator(Map properties=[:]) {
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         failure+=1
     }
-    if(properties.build.dockerfile && (properties.build.zipPath || properties.build.fileName)) {
+    if(properties.build.dockerFile && (properties.build.zipPath || properties.build.fileName)) {
         logger.info("Dockerfile and Zip file arguments provided. Please choose 1 packaging type for upload.")
         failure+=1
     }
