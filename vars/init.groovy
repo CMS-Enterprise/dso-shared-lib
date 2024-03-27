@@ -26,6 +26,11 @@ def paramValidator(Map properties=[:]) {
         logger.info("Please remove \"https://\" from the upload URL.")
         failure+=1
     }
+    if((!properties.build.zipPath?.trim() && properties.build.fileName?.trim()) || (properties.build.zipPath?.trim() && !properties.build.fileName?.trim())) {
+        logger.info("Missing zipPath or zipFileName")
+        logger.info("Please provide both zip file parameters for zip artifact upload")
+        failure+=1
+    }
     if (!properties) {
         logger.info("How did you even do that? There's literally no properties.")
         error("BOOOOOOOO TOMATO TOMATO TOMATO")
