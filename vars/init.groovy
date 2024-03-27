@@ -44,4 +44,5 @@ def paramValidator(Map properties=[:]) {
 
 def getArtifactName(Map properties=[:]) {
     properties.artifactName = properties.artifactPackagePath.split('/')[-1]
+    logger.info("Artifact Name: ${properties.artifactName}")
 }
