@@ -1,5 +1,5 @@
 def jfrogXray(Map properties=[:]) {
-    if(properties.build.artifactoryPath.contains("amazonaws")) {
+    if(properties.build.artifactHost.contains("amazonaws")) {
         logger.info("Artifact not stored in Artifactory, skipping JFrog XRay")
         return
     } 
@@ -10,7 +10,7 @@ def jfrogXray(Map properties=[:]) {
     if(properties.build.fileName.contains(".zip")) {  
         searchPath = "${properties.build.fileName}&repo=${repoName}"
     } else {
-        searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
+        searchPath = "${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
     }
 
     logger.info("JFrog XRay Scan")
@@ -21,7 +21,6 @@ def jfrogXray(Map properties=[:]) {
                 apk add --no-cache bash jq
                 jf c add cms-artifactory --url=https://artifactory.cloud.cms.gov/ --access-token=${TOKEN}
             """
-            // TODO: INTENTIONAL ERROR CASE 0 BELOW VVV
             def result = sh(script: "jf xr curl '/api/v1/artifacts?search=${searchPath}' | jq '.data[0].sec_issues'", returnStdout: true).trim()
             logger.info("XRay Scan Result: ${result}")
             if (result.equalsIgnoreCase("null")) { 

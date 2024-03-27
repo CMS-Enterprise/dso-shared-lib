@@ -18,20 +18,20 @@ def push(Map properties=[:]) {
     // } else {
     //     env.DOCKERPATH = ""
     // }
-    def tagList = "${properties.build.artifactoryPath}:${env.GIT_COMMIT}"
+    def tagList = "${properties.build.artifactHost}/${properties.artifactPackagePath}:${env.GIT_COMMIT}"
     if (properties.build.imageTag) {
         tags = properties.build.imageTag.replaceAll("\\s+", "").split(',')
         for (tag in tags) {
-            tagList = "${tagList}" + " -d ${properties.build.artifactoryPath}:${tag}"
+            tagList = "${tagList}" + " -d ${properties.build.artifactHost}/${properties.artifactPackagePath}:${tag}"
         }
         logger.info("Building with Tag from Properties File")
     }
     def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${env.GIT_COMMIT}-file-details --digest-file=${env.GIT_COMMIT}-image-properties --verbosity=info"
     
-    if(properties.adoIAMRole?.trim() && properties.build.artifactoryPath.contains("amazonaws")) {
+    if(properties.adoIAMRole?.trim() && properties.build.artifactHost.contains("amazonaws")) {
         logger.info("Pushing to ECR")
         ecrPush(properties, baseCommand)
-    } else if(properties.build.artifactoryPath.contains("artifactory")) {
+    } else if(properties.build.artifactHost.contains("artifactory")) {
         logger.info("Pushing to Artifactory")
         artifactoryPush(properties, baseCommand)
     } else {
