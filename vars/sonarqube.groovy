@@ -36,7 +36,7 @@ def digestParameters(Map properties=[:]) {
     //   logger.debug("No Project File: So skipping the procject level override")
     // }
     //Convert Yaml Maps to map of params that can be passed to CLI
-    def paramBuilder = " -Dsonar.host.url=https://sonarqube-dev.cloud.cms.gov/"
+    def paramBuilder = " -Dsonar.host.url=https://sonarqube.cloud.cms.gov/"
     // paramBuilder += defaultMap.sonarqube?.reportPath          ? " -Dsonar.coverageReportPaths=${defaultMap.sonarqube.reportPath}"                                        : ""
     paramBuilder += defaultMap?.javaVersion                   ? " -Dsonar.java.binaries=${defaultMap.sonarqube.javaVersion}"                 : " -Dsonar.java.binaries=."
     paramBuilder += defaultMap.sonarqube?.source              ? " -Dsonar.source='${defaultMap.sonarqube.source}'"                           : ""
