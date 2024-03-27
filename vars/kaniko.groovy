@@ -42,7 +42,7 @@ def push(Map properties=[:]) {
 
 def artifactoryPush(Map properties=[:], String baseCommand) {
     withCredentials([
-        file(credentialsId: "JfrogArt-SA-rw-kaniko",variable: 'BUILD_TOKEN'),
+        file(credentialsId: "jfrog-sa-rw-token",variable: 'BUILD_TOKEN'),
         usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
         string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
         string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
