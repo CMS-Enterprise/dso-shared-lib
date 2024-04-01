@@ -1,6 +1,6 @@
 def jfrogXray(Map properties=[:]) {
-    if(properties.build.artifactoryPath.contains("amazonaws")) {
-        logger.info("Artifact not stored in Artifactory")
+    if(properties.build.artifactHost.contains("amazonaws")) {
+        logger.info("Artifact not stored in Artifactory, skipping JFrog XRay")
         return
     } 
 
@@ -10,7 +10,7 @@ def jfrogXray(Map properties=[:]) {
     if(properties.build.fileName.contains(".zip")) {  
         searchPath = "${properties.build.fileName}&repo=${repoName}"
     } else {
-        searchPath = "${properties.artifactName}/${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
+        searchPath = "${env.GIT_COMMIT}/manifest.json&repo=${repoName}"
     }
 
     logger.info("JFrog XRay Scan")
@@ -42,12 +42,11 @@ def jfrogRunXray(Map properties=[:], String repoName) {
 }
 
 def imageScan(Map properties=[:], String repoName) {
-    logger.info("Running new XRay Scan")
+    logger.info("Running new Image XRay Scan")
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
-        sh""" 
-            jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ "componentID": "docker://${properties.artifactName}:${env.GIT_COMMIT}"}'
-        """
-        def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true)
+        sh "jf xr curl '/api/v1/scanArtifact' --header 'Content-Type: application/json' --data '{ \"componentID\": \"docker://${properties.artifactName}:${env.GIT_COMMIT}\"}'"
+
+        def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${env.GIT_COMMIT}/manifest.json\"}' | jq -r '.overall.status'", returnStdout: true).trim()
         logger.info("Status: ${status}")
 
         def retry=0
@@ -66,13 +65,35 @@ def imageScan(Map properties=[:], String repoName) {
 }
 
 def zipScan(Map properties=[:], String repoName) {
-    logger.info("On-demand zip file scanning not currently supported")
+    // logger.info("On-demand zip file scanning not currently supported")
+    // return
+
+    logger.info("Running new Zip XRay Scan")
+    withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: "TOKEN")]) {
+        sh "jf xr curl 'api/v2/index' --header 'Content-Type: application/json' --data '{   \"repo_path\":\"${properties.artifactPackagePath}/${properties.build.fileName}\"     }'"
+    
+        def status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${properties.build.fileName}\"}' | jq -r '.overall.status'", returnStdout: true).trim()
+        logger.info("Status: ${status}")
+
+        def retry=0
+        while(!status.equalsIgnoreCase('DONE') && retry < 10) {
+            // Waits 30 seconds before trying again, 30 * 1000
+            Thread.sleep(30000)
+            status = sh(script: "jf xr curl '/api/v1/artifact/status' --header 'Content-Type: application/json' --data '{ \"repo\": \"${repoName}\", \"path\": \"${properties.artifactName}/${properties.build.fileName}\"}' | jq -r '.overall.status'", returnStdout: true).trim()
+            logger.info("Status: ${status}")
+            logger.info("Retry count: ${retry}")
+            retry+=1
+        }
+        sh """
+            jf xr curl '/api/v1/artifacts?search=${properties.build.fileName}&repo=${repoName}' | jq '.data[0].sec_issues'
+        """
+    }
 }
 
 def upload(Map properties=[:]) {
     if(properties.build.dockerFile?.trim()) { 
-        logger.info("Dockerfile provided")
-        return 
+        logger.info("Dockerfile provided, skipping manual upload")
+        return
     }
     withCredentials([string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'TOKEN')]) {
         sh "jf rt u --url=https://artifactory.cloud.cms.gov/artifactory --access-token ${TOKEN} ${properties.build.fileName} ${properties.artifactPackagePath}/${properties.build.fileName} --build-name=${properties.artifactName} --build-number=${env.GIT_COMMIT}"
