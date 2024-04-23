@@ -5,6 +5,13 @@ def test(String testArgs="") {
     """
 }
 
+def ci(String ciArgs="") {
+    logger.info("starting npm ci")
+    sh"""
+    npm ${ciArgs}
+    """
+}
+
 def install(String installArgs="") {
     logger.info("starting npm install")
     sh """
