@@ -1,0 +1,82 @@
+kind: Pod
+metadata:
+  name: node18-build
+spec:
+  serviceAccountName: jenkins-role
+  containers:
+    - name: node
+      image: artifactory.cloud.cms.gov/docker/node:18
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: base-agent
+      image: artifactory.cloud.cms.gov/tooling-docker-registry/base-agent:terraform1.6-awscli2.15-zip
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: sonarqube
+      image: artifactory.cloud.cms.gov/docker/sonarsource/sonar-scanner-cli:5.0
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: snyk
+      image: artifactory.cloud.cms.gov/docker/snyk/snyk:maven-3-jdk-11
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
+    - name: awscli
+      image: artifactory.cloud.cms.gov/docker/amazon/aws-cli:2.7.30
+      command: ['cat']
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+    - name: kaniko
+      image: artifactory.cloud.cms.gov/docker/kaniko-project/executor:debug
+      workingDir: "/home/jenkins/agent"
+      imagePullPolicy: Always
+      command:
+      - /busybox/cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+    - name: jfrog
+      image: artifactory.cloud.cms.gov/docker/jfrog/jfrog-cli-v2-jf
+      workingDir: "/home/jenkins/agent"
+      imagePullPolicy: Always
+      command: 
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+  imagePullSecrets:
+  - name: jfrog-secret
