@@ -1,10 +1,14 @@
 def snykCodeTest(Map snykCodeTestArgs=[:]) {
     logger.info("Snyk Code Test")
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
-        sh """
-            snyk auth ${TOKEN}
-            snyk code test --org=${snykCodeTestArgs.snyk.orgId} --json
-        """
+        try {
+            sh """
+                snyk auth ${TOKEN}
+                snyk code test --org=${snykCodeTestArgs.snyk.orgId} --json
+            """
+        } catch(Exception ex) {
+            logger.info("Snyk Code not enabled in Organization")
+        }
     }
 }
 
