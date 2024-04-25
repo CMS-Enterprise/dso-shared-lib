@@ -40,17 +40,32 @@ def push(Map properties=[:]) {
     }
 }
 
+// def artifactoryPush(Map properties=[:], String baseCommand) {
+//     withCredentials([
+//         file(credentialsId: "jfrog-sa-rw-token",variable: 'BUILD_TOKEN'),
+//         usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
+//         string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
+//         string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
+//         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
+//         sh """
+//             mkdir -p /kaniko/.docker
+//             cp \$BUILD_TOKEN /kaniko/.docker/
+//             ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg TOKEN=${JfrogArt_TOKEN} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
+//             pwd;ls ${env.GIT_COMMIT}-image-properties
+//         """
+//     }
+// }
+
 def artifactoryPush(Map properties=[:], String baseCommand) {
-    withCredentials([
-        file(credentialsId: "jfrog-sa-rw-token",variable: 'BUILD_TOKEN'),
-        usernamePassword(credentialsId: "JfrogArt-SA-ro-user-pass", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
-        string(credentialsId: "JfrogArt-SA-ro-Token", variable: 'JfrogArt_TOKEN'),
-        string(credentialsId: "JfrogArt-npm-SA-ro-Token", variable: 'NPM_READ_TOKEN')]) {
+    withCredentials(usernamePassword(credentialsId: "kaniko-jfrog-sa-rw", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')) {
         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
         sh """
             mkdir -p /kaniko/.docker
-            cp \$BUILD_TOKEN /kaniko/.docker/
-            ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg TOKEN=${JfrogArt_TOKEN} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
+            touch /kaniko/.docker/config.json
+            cat >> /kaniko/.docker/config.json <<EOF
+{"auths": {"artifactory.cloud.cms.gov": {"username":"${USERNAME}","password":"${PASSWORD}"}}}
+EOF
+            ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg USERARG=${properties.build.dockerargs}
             pwd;ls ${env.GIT_COMMIT}-image-properties
         """
     }
