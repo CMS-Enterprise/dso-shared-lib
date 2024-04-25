@@ -57,7 +57,8 @@ def push(Map properties=[:]) {
 // }
 
 def artifactoryPush(Map properties=[:], String baseCommand) {
-    withCredentials(usernamePassword(credentialsId: "kaniko-jfrog-sa-rw", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')) {
+    logger.info("In Artifactory Push")
+    withCredentials([usernamePassword(credentialsId: "kaniko-jfrog-sa-rw", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         /* /kaniko/.docker/config.json is the path where kaniko container assumes authentication exists. */
         sh """
             mkdir -p /kaniko/.docker
