@@ -17,7 +17,7 @@ spec:
       workingDir: "/home/jenkins/agent"
       resources:
         limits:
-          memory: 2Gi
+          memory: 3Gi
     - name: base-agent
       image: artifactory.cloud.cms.gov/tooling-docker-registry/base-agent:terraform1.6-awscli2.15-zip
       imagePullPolicy: Always
