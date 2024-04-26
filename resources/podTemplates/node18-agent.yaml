@@ -16,12 +16,9 @@ spec:
         readOnly: false
       workingDir: "/home/jenkins/agent"
       resources:
-        requests:
-          cpu: 1000m
-          memory: 1Gi
         limits:
-          cpu: 1000m
-          memory: 1Gi
+          cpu: 2000m
+          memory: 2Gi
     - name: base-agent
       image: artifactory.cloud.cms.gov/tooling-docker-registry/base-agent:terraform1.6-awscli2.15-zip
       imagePullPolicy: Always
@@ -75,12 +72,9 @@ spec:
         name: "workspace-volume"
         readOnly: false
       resources:
-        requests:
-          cpu: 1000m
-          memory: 3Gi
         limits:
-          cpu: 1000m
-          memory: 3Gi
+          cpu: 2000m
+          memory: 8Gi
     - name: jfrog
       image: artifactory.cloud.cms.gov/docker/jfrog/jfrog-cli-v2-jf
       workingDir: "/home/jenkins/agent"
