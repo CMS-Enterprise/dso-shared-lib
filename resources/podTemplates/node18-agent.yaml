@@ -81,6 +81,13 @@ spec:
       - mountPath: "/home/jenkins/agent"
         name: "workspace-volume"
         readOnly: false
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 3Gi
+        limits:
+          cpu: 1000m
+          memory: 3Gi
     - name: jfrog
       image: artifactory.cloud.cms.gov/docker/jfrog/jfrog-cli-v2-jf
       workingDir: "/home/jenkins/agent"
