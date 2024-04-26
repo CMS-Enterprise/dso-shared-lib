@@ -18,10 +18,10 @@ spec:
       resources:
         requests:
           cpu: 2000m
-          memory: 4Gi
+          memory: 8Gi
         limits:
           cpu: 2000m
-          memory: 4Gi
+          memory: 8Gi
     - name: base-agent
       image: artifactory.cloud.cms.gov/tooling-docker-registry/base-agent:terraform1.6-awscli2.15-zip
       imagePullPolicy: Always
@@ -70,6 +70,13 @@ spec:
       command:
       - /busybox/cat
       tty: true
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 8Gi
+        limits:
+          cpu: 2000m
+          memory: 8Gi
       volumeMounts:
       - mountPath: "/home/jenkins/agent"
         name: "workspace-volume"
