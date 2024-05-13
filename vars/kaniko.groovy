@@ -63,7 +63,7 @@ def ecrPush(Map properties=[:], String baseCommand) {
         unset AWS_WEB_IDENTITY_TOKEN_FILE
         mkdir -p /kaniko/.docker
         echo '{"credsStore":"ecr-login"}' > /kaniko/.docker/config.json
-        ${baseCommand} --build-arg USERARG=${properties.build.dockerargs} --build-arg NPM_READ_TOKEN=${NPM_READ_TOKEN}
+        ${baseCommand} --build-arg USERARG=${properties.build.dockerargs}
         pwd;ls ${env.GIT_COMMIT}-image-properties
     """
 }
