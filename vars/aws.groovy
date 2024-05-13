@@ -29,7 +29,7 @@ def assumeRole(String ADOIAMRole)  {
             --role-session-name session \
             --output text \
             --query Credentials \
-            > /tmp/role-creds.json
+            > /tmp/role-creds.txt
 
           cat > .aws-creds <<EOF
 [default]
