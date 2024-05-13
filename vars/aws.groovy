@@ -13,7 +13,7 @@ def assumeRole(String ADOIAMRole)  {
           --query Credentials \
           > /tmp/role-creds.txt
 
-        [default] >> .aws-creds
+        echo [default] >> .aws-creds
         aws_access_key_id=$(cut -f1 /tmp/role-creds.txt)  >> .aws-creds
         aws_secret_access_key=$(cut -f3 /tmp/role-creds.txt)  >> .aws-creds
         aws_session_token=$(cut -f4 /tmp/role-creds.txt)  >> .aws-creds
