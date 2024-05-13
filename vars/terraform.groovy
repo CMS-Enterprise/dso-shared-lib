@@ -1,7 +1,7 @@
 def init(Map deployArgs=[:]) {
     logger.info("terraform init ")
     logger.debug("deployArgs: ${deployArgs}")
-    sh "terraform -chdir=${deployArgs.backendConfigFile} init -backend-config=${deployArgs.backendConfigFile}"
+    sh "terraform -chdir=${deployArgs.backendConfigFile} init -backend-config=${deployArgs.backendConfigFile} -no-color"
 }
 
 def plan(Map deployArgs=[:]) {
@@ -15,7 +15,7 @@ def plan(Map deployArgs=[:]) {
         export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
         export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
         aws sts get-caller-identity
-        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} plan -var-file=${WORKSPACE}/${deployArgs.tfVar} 
+        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} plan -var-file=${WORKSPACE}/${deployArgs.tfVar} -no-color
     """
 }
 
@@ -32,8 +32,8 @@ def apply(Map deployArgs=[:]) {
         export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
         export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
         aws sts get-caller-identity
-        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} apply -var-file=${WORKSPACE}/${deployArgs.tfVar} --auto-approve
+        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} apply -var-file=${WORKSPACE}/${deployArgs.tfVar} --auto-approve -no-color
         sleep 30
-        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} destroy -var-file=${WORKSPACE}/${deployArgs.tfVar} --auto-approve
+        terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} destroy -var-file=${WORKSPACE}/${deployArgs.tfVar} --auto-approve -no-color
     """
 }
