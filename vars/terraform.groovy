@@ -11,9 +11,7 @@ def plan(Map deployArgs=[:]) {
     AWSCRED = sh (script: "aws sts assume-role --role-arn ${deployArgs.awsRoleArn} --role-session-name AWSCLI-Session", returnStdout: true)
     AWSCRED = readJSON text: "${AWSCRED}"
     sh """
-        export AWS_ACCESS_KEY_ID=${AWSCRED.Credentials.AccessKeyId}
-        export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
-        export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
+       
         aws sts get-caller-identity
         terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} plan -var-file=${WORKSPACE}/${deployArgs.tfVar} -no-color
     """
