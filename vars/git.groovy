@@ -5,7 +5,7 @@ def clone(String REPO_URL, String BRANCH) {
             REPO_URL: Repo
             Branch: Repo-branch
     */
-    checkout scm: [$class: 'GitSCM', branches: [[name: "*/${BRANCH}"]], userRemoteConfigs: [[credentialsId: "GIT.SERVCACCT", url: "${REPO_URL}"]]]
+    checkout scm: [$class: 'GitSCM', branches: [[name: "*/${BRANCH}"]], userRemoteConfigs: [[credentialsId: "git_token", url: "${REPO_URL}"]]]
 }
 def push(String REPO, String BRANCH, String MESSAGE) {
     /*
