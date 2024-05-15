@@ -9,7 +9,7 @@ def init(Map deployArgs=[:]) {
         ln -s ~/.tfenv/bin/* /usr/local/bin
         echo "trust-tfenv: yes" > ~/.tfenv/use-gpgv
     """
-    git.clone(deployArgs.github_repo,deployArgs.branch)
+
     sh """ 
         cd ${deployArgs.appName}
         terraform -chdir=${deployArgs.deploy.workDir} init -no-color -backend-config=${deployArgs.deploy.backendConfigFile}
