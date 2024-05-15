@@ -13,7 +13,7 @@ def plan(Map deployArgs=[:]) {
     sh """
         export AWS_ACCESS_KEY_ID=${AWSCRED.Credentials.AccessKeyId}
         export AWS_SECRET_ACCESS_KEY=${AWSCRED.Credentials.SecretAccessKey}
-        export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken
+        export AWS_SESSION_TOKEN=${AWSCRED.Credentials.SessionToken}
         aws sts get-caller-identity
         terraform -chdir=${WORKSPACE}/${deployArgs.backendConfigFile} plan -var-file=${WORKSPACE}/${deployArgs.tfVar} -no-color
     """
