@@ -2,6 +2,10 @@ def paramValidator(Map properties=[:]) {
     logger.info("Validating parameters...")
     def failure = 0
 
+    if(properties.slackNotification && !properties.slackNotification.contains("#")) {
+        logger.info("Please prepend your slack channel name with a #. Example: #channel-name")
+        failure+=1
+    }
     if(properties.build.artifactHost.contains("amazonaws") && !properties.adoIAMRole?.trim()) {
         logger.info("AWS ECR upload URL provided, but no IAM role provided.")
         logger.info("Please provide IAM Role to be assumed in the account where the artifact will be uploaded.")
