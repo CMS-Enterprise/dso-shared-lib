@@ -6,12 +6,12 @@ def paramValidator(Map properties=[:]) {
         logger.info("Please prepend your slack channel name with a #. Example: #channel-name")
         failure+=1
     }
-    if(properties.build.artifactHost.contains("amazonaws") && !properties.adoIAMRole?.trim()) {
+    if(properties.build.artifactHost && properties.build.artifactHost.contains("amazonaws") && !properties.adoIAMRole?.trim()) {
         logger.info("AWS ECR upload URL provided, but no IAM role provided.")
         logger.info("Please provide IAM Role to be assumed in the account where the artifact will be uploaded.")
         failure+=1
     }
-    if(properties.build.artifactHost.contains("amazonaws") && (properties.build.zipPath || properties.build.fileName)) {
+    if(properties.build.artifactHost && properties.build.artifactHost.contains("amazonaws") && (properties.build.zipPath || properties.build.fileName)) {
         logger.info("AWS ECR upload URL, but artifact is a zip file.")
         logger.info("Zip file artifacts cannot be uploaded to ECR. Please provide an image-based artifact.")
         failure+=1
@@ -20,7 +20,7 @@ def paramValidator(Map properties=[:]) {
         logger.info("Dockerfile and Zip file arguments provided. Please choose 1 packaging type for upload.")
         failure+=1
     }
-    if(properties.artifactPackagePath.contains("https://") || properties.build.artifactHost.contains("https://")) {
+    if(properties.artifactPackagePath && properties.artifactPackagePath.contains("https://") || properties.build.artifactHost.contains("https://")) {
         logger.info("Please remove \"https://\" from the parameters")
         failure+=1
     }
