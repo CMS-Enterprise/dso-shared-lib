@@ -16,6 +16,17 @@ spec:
     #     name: "workspace-volume"
     #     readOnly: false
     #   workingDir: "/home/jenkins/agent"
+    - name: tfenv
+      image: artifactory.cloud.cms.gov/docker/alpine:3.19.1
+      imagePullPolicy: Always
+      command:
+      - cat
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
+      workingDir: "/home/jenkins/agent"
     - name: base-agent
       image: artifactory.cloud.cms.gov/tooling-docker-registry/base-agent:terraform1.6-awscli2.15
       imagePullPolicy: Always
@@ -49,14 +60,13 @@ spec:
       - mountPath: "/home/jenkins/agent"
         name: "workspace-volume"
         readOnly: false
-  #   - name: aws
-  #     image: artifactory.cloud.cms.gov/docker/amazon/aws-cli:2.15.3
-  #     workingDir: "/home/jenkins/agent"
-  #     imagePullPolicy: Always
-  #     tty: true
-  #     volumeMounts:
-  #     - mountPath: "/home/jenkins/agent"
-  #       name: "workspace-volume"
-  #       readOnly: false
+    - name: awscli
+      image: artifactory.cloud.cms.gov/docker/amazon/aws-cli:2.7.30
+      command: ['cat']
+      tty: true
+      volumeMounts:
+      - mountPath: "/home/jenkins/agent"
+        name: "workspace-volume"
+        readOnly: false
   imagePullSecrets:
   - name: jfrog-secret
