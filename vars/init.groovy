@@ -43,3 +43,22 @@ def paramValidator(Map properties=[:]) {
 def getArtifactName(Map properties=[:]) {
     properties.artifactName = properties.artifactPackagePath.split('/')[-1]
 }
+
+def terraformParamValidator (Map properties=[:]) {
+    logger.info("Validating parameters...")
+    def failure = 0
+
+    if(properties.slackNotification && !properties.slackNotification.contains("#")) {
+        logger.info("Please prepend your slack channel name with a #. Example: #channel-name")
+        failure+=1
+    }
+    if (!properties) {
+        logger.info("How did you even do that? There's literally no properties.")
+        error("BOOOOOOOO TOMATO TOMATO TOMATO")
+    }
+    if(failure > 0) {
+        error("Parameter validation failed")
+    }
+
+    logger.info("Parameters validated. Proceeding with pipeline.")
+}
