@@ -4,7 +4,7 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
         try {
             sh """
                 snyk auth ${TOKEN}
-                snyk code test --org=${snykCodeTestArgs.snyk.orgId} --json
+                snyk code test --org=${snykCodeTestArgs.snyk.orgId} --json --report
             """
         } catch(Exception ex) {
             logger.info("Snyk Code not enabled in Organization")
