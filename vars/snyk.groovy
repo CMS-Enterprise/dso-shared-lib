@@ -40,11 +40,11 @@ def snykIac(Map snykTestArgs=[:]) {
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
-            snyk iac test . --report
+            snyk iac test . --org=${snykCodeTestArgs.snyk.orgId} --report
         """
         logger.info("Testing terraform plan output...")
         sh """ 
-            snyk iac test ${deployArgs.deploy.workDir}/tfplan.json --report
+            snyk iac test ${deployArgs.deploy.workDir}/tfplan.json --org=${snykCodeTestArgs.snyk.orgId} --report
         """
     }
 }
