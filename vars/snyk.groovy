@@ -14,7 +14,6 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
 
 def snykTest(Map snykTestArgs=[:]) {
     logger.info("Snyk Test")
-    logger.debug("snykTestArgs: ${snykTestArgs}")
     logger.info("Technology: ${snykTestArgs.tech}")
     def xrayCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
     def projectTech = "${snykTestArgs.tech}"
@@ -32,6 +31,20 @@ def snykTest(Map snykTestArgs=[:]) {
         ${xrayCommand}
     """
     }
+}
+
+def snykIac(Map snykMonitorArgs=[:]) {
+    logger.info("Snyk IAC")
+    logger.info("Technology: ${snykTestArgs.tech}")
+    logger.info("Testing terraform files...")
+    sh """
+        snyk auth ${TOKEN}
+        snyk iac test . --json 
+    """
+    logger.info("Testing terraform plan output...")
+    sh """ 
+        snyk iac test tfplan.json
+    """
 }
 
 def snykMonitor(Map snykMonitorArgs=[:]) {

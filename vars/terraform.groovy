@@ -19,6 +19,7 @@ def plan(Map deployArgs=[:]) {
     sh """
         unset AWS_WEB_IDENTITY_TOKEN_FILE
         terraform -chdir=${deployArgs.deploy.workDir} plan -var-file=${deployArgs.deploy.tfVar} -no-color -out=tfplan ${deployArgs.buildArgs}
+        terraform show -json tfplan > tfplan.json
     """
 }
 
