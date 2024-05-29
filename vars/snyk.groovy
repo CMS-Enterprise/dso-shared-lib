@@ -39,11 +39,11 @@ def snykIac(Map snykMonitorArgs=[:]) {
     logger.info("Testing terraform files...")
     sh """
         snyk auth ${TOKEN}
-        snyk iac test . --json 
+        snyk iac test . --json --report
     """
     logger.info("Testing terraform plan output...")
     sh """ 
-        snyk iac test tfplan.json
+        snyk iac test tfplan.json --report
     """
 }
 
