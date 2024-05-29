@@ -15,12 +15,12 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
 def snykTest(Map snykTestArgs=[:]) {
     logger.info("Snyk Test")
     logger.info("Technology: ${snykTestArgs.tech}")
-    def xrayCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
+    def snykTestCommand = "snyk test --org=${snykTestArgs.snyk.orgId} --json"
     def projectTech = "${snykTestArgs.tech}"
     switch(snykTestArgs.tech) {
         case "gradle":
             gradleBuildPathParam = snykTestArgs.snyk.gradleBuildPath?: "build.gradle"
-            xrayCommand += " --file=${WORKSPACE}/${gradleBuildPathParam}"
+            snykTestCommand += " --file=${WORKSPACE}/${gradleBuildPathParam}"
             break;
         default:
             break;
@@ -28,7 +28,7 @@ def snykTest(Map snykTestArgs=[:]) {
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
         sh """
             snyk auth ${TOKEN}
-            ${xrayCommand}
+            ${snykTestCommand}
         """
     }
 }
