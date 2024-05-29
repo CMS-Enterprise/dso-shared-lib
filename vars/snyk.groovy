@@ -38,10 +38,9 @@ def snykIac(Map snykTestArgs=[:]) {
     logger.info("Technology: ${snykTestArgs.tech}")
     logger.info("Testing terraform files...")
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
-        sh """
-            snyk auth ${TOKEN}
-            snyk iac test . --org=${snykCodeTestArgs.snyk.orgId} --report
-        """
+        sh "snyk auth ${TOKEN}"
+        def exitCode = sh "snyk iac test . --org=${snykCodeTestArgs.snyk.orgId} --report"
+
         logger.info("Testing terraform plan output...")
         sh """ 
             snyk iac test ${deployArgs.deploy.workDir}/tfplan.json --org=${snykCodeTestArgs.snyk.orgId} --report
