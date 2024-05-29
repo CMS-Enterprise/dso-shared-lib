@@ -44,7 +44,7 @@ def snykIac(Map snykTestArgs=[:]) {
         """
         logger.info("Testing terraform plan output...")
         sh """ 
-            snyk iac test ${deployArgs.deploy.workDir}/tfplan.json --org=${snykTestArgs.snyk.orgId} --report || true
+            snyk iac test ${snykTestArgs.deploy.workDir}/tfplan.json --org=${snykTestArgs.snyk.orgId} --report || true
         """
     }
 }
