@@ -26,25 +26,27 @@ def snykTest(Map snykTestArgs=[:]) {
             break;
     }
     withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
-    sh """
-        snyk auth ${TOKEN}
-        ${xrayCommand}
-    """
+        sh """
+            snyk auth ${TOKEN}
+            ${xrayCommand}
+        """
     }
 }
 
-def snykIac(Map snykMonitorArgs=[:]) {
+def snykIac(Map snykTestArgs=[:]) {
     logger.info("Snyk IAC")
     logger.info("Technology: ${snykTestArgs.tech}")
     logger.info("Testing terraform files...")
-    sh """
-        snyk auth ${TOKEN}
-        snyk iac test . --json --report
-    """
-    logger.info("Testing terraform plan output...")
-    sh """ 
-        snyk iac test tfplan.json --report
-    """
+    withCredentials([string(credentialsId: "snyk-sa-token", variable: "TOKEN")]) {
+        sh """
+            snyk auth ${TOKEN}
+            snyk iac test . --json --report
+        """
+        logger.info("Testing terraform plan output...")
+        sh """ 
+            snyk iac test tfplan.json --report
+        """
+    }
 }
 
 def snykMonitor(Map snykMonitorArgs=[:]) {
