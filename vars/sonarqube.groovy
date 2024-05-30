@@ -7,7 +7,7 @@ def digestParameters(Map properties=[:]) {
     //         credentialsId: "${env.bitbucketCredentialId}",
     //         url: "${env.bitbucketUrl}/scm/ce/cloudbees-module-settings.git"
     // }
-    logger.info("Running digestParameters")
+    logger.info("Digesting Sonarqube parameters...")
     def defaultMapYaml = libraryResource "sonarqube/defaults.yaml"
     defaultMap = readYaml text: defaultMapYaml
     println "${defaultMap}"
@@ -16,7 +16,7 @@ def digestParameters(Map properties=[:]) {
       logger.debug("Technology: defaultMap.${properties.tech}")
       defaultMap.sonarqube."${properties.tech}".each { entry -> defaultMap.sonarqube["${entry.key}"] = "${entry.value}" }
     } else {
-      logger.info("no technologyFound")
+      logger.info("No SQ specified technology found")
     }
     // Does this work?? filepath?
     // def projectMap = libraryResource "sonarqube/${properties.ghOrg}.yaml"
@@ -35,7 +35,7 @@ def digestParameters(Map properties=[:]) {
     // else {
     //   logger.debug("No Project File: So skipping the procject level override")
     // }
-    //Convert Yaml Maps to map of params that can be passed to CLI
+    // Convert Yaml Maps to map of params that can be passed to CLI
     def paramBuilder = " -Dsonar.host.url=https://sonarqube.cloud.cms.gov/"
     // paramBuilder += defaultMap.sonarqube?.reportPath          ? " -Dsonar.coverageReportPaths=${defaultMap.sonarqube.reportPath}"                                        : ""
     paramBuilder += defaultMap?.javaVersion                   ? " -Dsonar.java.binaries=${defaultMap.sonarqube.javaVersion}"                 : " -Dsonar.java.binaries=."
