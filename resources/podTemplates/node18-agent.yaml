@@ -41,7 +41,7 @@ spec:
         readOnly: false
       workingDir: "/home/jenkins/agent"
     - name: snyk
-      image: artifactory.cloud.cms.gov/docker/snyk/snyk:maven-3-jdk-11
+      image: artifactory.cloud.cms.gov/docker/snyk/snyk:node-18
       imagePullPolicy: Always
       command:
       - cat
