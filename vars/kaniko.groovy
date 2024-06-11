@@ -47,7 +47,7 @@ def artifactoryPush(Map properties=[:], String baseCommand) {
             mkdir -p /kaniko/.docker
             touch /kaniko/.docker/config.json
             cat >> /kaniko/.docker/config.json <<EOF
-{"auths": {"artifactory.cloud.cms.gov": {"username":"${USERNAME}","password":"${PASSWORD}"}}, {"artifactory-dev.cloud.cms.gov": {"username":"${USERNAME}","password":"${PASSWORD}"}}}
+{"auths": {"artifactory.cloud.cms.gov": {"username": "${USERNAME}","password": "${PASSWORD}"},"artifactory-dev.cloud.cms.gov": {"username": "${USERNAME}","password": "${PASSWORD}"}}}
 EOF
             ${baseCommand} --build-arg USER=${USERNAME} --build-arg PASS=${PASSWORD} --build-arg USERARG=${properties.build.dockerargs}
             pwd;ls ${env.GIT_COMMIT}-image-properties
