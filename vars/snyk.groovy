@@ -40,3 +40,10 @@ def snykMonitor(Map snykMonitorArgs=[:]) {
     snykMonitorParam = snykMonitorArgs?: ""
     sh "snyk monitor ${snykMonitorParam}"
 }
+
+def snykSbom(Map snykSbomArgs=[:]) {
+    logger.info("Snyk Sbom")
+    logger.debug("snykSbomArgs: ${snykSbomArgs}")
+    snykSbomParam = snykSbomArgs?: ""
+    sh "snyk sbom --org=${snykSbomParam.snyk.orgId} ${snykSbomParam} --format=cyclonedx1.5+json"
+}
