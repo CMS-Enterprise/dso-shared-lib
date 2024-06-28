@@ -9,7 +9,6 @@ def snykCodeTest(Map snykCodeTestArgs=[:]) {
             // """
             sh """
                 snyk auth ${TOKEN}
-                snyk test -v
                 snyk code test --json --org=${snykCodeTestArgs.snyk.orgId}
             """
         } catch(Exception ex) {
