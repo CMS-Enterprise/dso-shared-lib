@@ -26,7 +26,7 @@ def push(Map properties=[:]) {
         }
         logger.info("Building with Tag from Properties File")
     }
-    def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${env.GIT_COMMIT}-file-details --digest-file=${env.GIT_COMMIT}-image-properties --verbosity=debug --cache=${properties.build.cacheFlag}"
+    def baseCommand="/kaniko/executor -f ${properties.build.workDir}/${properties.build.dockerFile} -c ${properties.build.workDir} -d ${tagList} ${ignorePathArg} --image-name-tag-with-digest-file=${env.GIT_COMMIT}-file-details --digest-file=${env.GIT_COMMIT}-image-properties --verbosity=info --cache=${properties.build.cacheFlag}"
     
     if(properties.adoIAMRole?.trim() && properties.build.artifactHost.contains("amazonaws")) {
         logger.info("Pushing to ECR")
