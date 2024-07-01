@@ -2,6 +2,10 @@ def paramValidator(Map properties=[:]) {
     logger.info("Validating parameters...")
     def failure = 0
 
+    if(!properties.build.cacheFlag.equalsIgnoreCase("true") && !properties.build.cacheFlag.equalsIgnoreCase("false")) {
+        logger.info("Please enter value \"true\" or \"false\" for the kaniko cache flag")
+        failure+=1
+    }
     if(properties.slackNotification && !properties.slackNotification.contains("#")) {
         logger.info("Please prepend your slack channel name with a #. Example: #channel-name")
         failure+=1
