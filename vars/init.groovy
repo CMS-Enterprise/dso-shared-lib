@@ -2,7 +2,7 @@ def paramValidator(Map properties=[:]) {
     logger.info("Validating parameters...")
     def failure = 0
 
-    if(properties.build.cacheFlag != ("true" || "false")) {
+    if(!properties.build.cacheFlag.equals("true") && !properties.build.cacheFlag.equals("false")) {
         logger.info("Please enter value \"true\" or \"false\" for the kaniko cache flag")
         failure+=1
     }
